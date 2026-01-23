@@ -269,8 +269,9 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
   right:64px;
   top:50%;
   transform:translateY(-50%);
-  width:124px;
-  height:124px;
+  /* Increase by ~40% (from 124px) */
+  width:174px;
+  height:174px;
   border-radius:28px;
   border:1px solid rgba(255,255,255,.18);
   background:rgba(255,255,255,.12);
@@ -291,8 +292,9 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
     left:50%;
     top:50%;
     transform:translate(-50%, -50%);
-    width:112px;
-    height:112px;
+    /* Increase by ~40% (from 112px) */
+    width:157px;
+    height:157px;
     border-radius:26px;
   }
 }
