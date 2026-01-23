@@ -7,6 +7,8 @@
   --muted:#b8d3e6;
   --brand:#1fb6ff;
   --brand2:#2dd4ff;
+  /* Royal blue highlight for “CORE” in SHIELDNETCORE */
+  --core:#4169e1;
   --menu-bg:#ffffff;
   /* Menu bar typography */
   --menu-link:#0a2c40;
@@ -45,6 +47,12 @@ body{
 a{color:var(--brand2); text-decoration:none}
 a:hover{text-decoration:underline}
 
+/* Highlight “CORE” wordmark segment */
+.core{
+  color:var(--core);
+  text-shadow:0 0 14px rgba(65,105,225,.28);
+}
+
 .container{width:100%; max-width:var(--max); margin:0 auto; padding:0 20px}
 
 .skip-link{
@@ -76,6 +84,30 @@ header.site-header{
   backdrop-filter:none;
   background:var(--menu-bg);
   border-bottom:1px solid rgba(0,0,0,.12);
+}
+
+/* Mobile nav (hamburger + drawer) */
+.nav-toggle{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  border:1px solid rgba(10,44,64,.18);
+  background:rgba(214, 213, 221, 0.92);
+  color:var(--menu-link);
+  cursor:pointer;
+}
+
+.nav-toggle svg{width:22px; height:22px; display:block}
+
+.nav-overlay{
+  display:none;
+  position:fixed;
+  inset:var(--header-h) 0 0;
+  background:rgba(0,0,0,.35);
+  z-index:9;
 }
 
 /* Menu bar links + brand text */
@@ -212,6 +244,51 @@ nav.site-nav a:hover{
   background:rgba(10,44,64,.08);
 }
 
+@media (max-width: 760px){
+  .nav-toggle{display:inline-flex}
+
+  /* Debug indicator: if the menu opens, the toggle gets a visible outline */
+  body.nav-open .nav-toggle{outline:2px solid rgba(31,182,255,.75); outline-offset:2px}
+
+  /* Slide-down drawer */
+  header.site-header nav.site-nav{
+    position:fixed;
+    top:var(--header-h);
+    left:12px;
+    right:12px;
+    z-index:10;
+    flex-direction:column;
+    align-items:stretch;
+    gap:8px;
+    padding:12px;
+    border-radius:16px;
+    border:1px solid rgba(10,44,64,.14);
+    background:rgba(255,255,255,.98);
+    box-shadow:0 18px 48px rgba(0,0,0,.22);
+    transform:translateY(-14px);
+    opacity:0;
+    pointer-events:none;
+    transition:transform 180ms ease, opacity 180ms ease;
+  }
+
+  header.site-header nav.site-nav a{
+    padding:12px 12px;
+    border-radius:12px;
+    border-color:rgba(10,44,64,.10);
+    background:rgba(10,44,64,.04);
+  }
+
+  /* Open drawer when JS toggles body.nav-open OR aria-expanded is true */
+  body.nav-open header.site-header nav.site-nav,
+  header.site-header .nav-toggle[aria-expanded="true"] ~ nav.site-nav{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  body.nav-open .nav-overlay{display:block}
+}
+
 /* Ensure the brand title matches the menu bar font color */
 header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
 
@@ -226,21 +303,21 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
   align-items:center;
 }
 
-/* Lower the hero message a bit to reveal more of the background artwork/logo */
+/* Homepage hero */
 .hero--home.hero--full{
-  align-items:flex-end;
-  padding-bottom:120px;
+  align-items:center;
+  padding-bottom:44px;
+}
+
+.hero--home{
+  position:relative;
+  isolation:isolate;
 }
 
 /* Keep the hero content above decorative logo/overlays */
 .hero--home .hero-content{
   position:relative;
   z-index:1;
-}
-
-.hero--home{
-  position:relative;
-  isolation:isolate;
 }
 
 /* Push the home hero copy further to the left to avoid clashing with the hero artwork text */
@@ -257,52 +334,71 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
   position:absolute;
   inset:0;
   z-index:-2;
-  /* Keep the hero image clean/visible (no dark gradient overlay) */
+  /* Landing page artwork as homepage hero image */
   background:#ffffff url("assets/Landing%20Page.jpg") center/cover no-repeat;
-  /* Boost clarity without adding an overlay */
   filter:brightness(1.18) contrast(1.06) saturate(1.1);
 }
 
 /* Logo II at middle-top of the hero (homepage) */
 .hero-top-logo{
   position:absolute;
-  right:64px;
+  /* Pull it slightly toward the center (further away from the right edge) */
+  right:clamp(36px, 8vw, 220px);
   top:50%;
   transform:translateY(-50%);
-  /* Increase by ~40% (from 124px) */
-  width:174px;
-  height:174px;
-  border-radius:28px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.12);
-  box-shadow:0 18px 55px rgba(0,0,0,.38);
-  z-index:1;
+  /* Bigger + bolder on homepage */
+  width:clamp(240px, 20vw, 340px);
+  height:clamp(240px, 20vw, 340px);
+  border-radius:30px;
+  border:2px solid rgba(255,255,255,.24);
+  background:rgba(255,255,255,.14);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.16),
+    0 26px 70px rgba(0,0,0,.44);
+  z-index:2;
+}
+
+/* (hero tile uses the default .logo-wrap.spark-logo effects) */
+
+/* Tablet: keep the logo on the right so it doesn't overlap the hero headline */
+@media (max-width: 900px){
+  .hero-top-logo{
+    right:28px;
+    width:220px;
+    height:220px;
+  }
 }
 
 /* Mobile: keep the logo centered */
-@media (max-width: 900px){
-  /* Push the text panel lower so the hero logo can sit in the middle cleanly */
+@media (max-width: 600px){
+  /* Mobile: stack the hero logo ABOVE the copy so it stays at the top
+     before the “Safety Intelligence” kicker. */
+  .hero--home{
+    /* ~1/4 of the viewport height (with sensible min/max) */
+    --home-hero-logo-size: clamp(220px, 32vh, 420px);
+  }
+
   .hero--home.hero--full{
-    align-items:flex-end;
-    padding-bottom:56px;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding-top:18px;
+    padding-bottom:36px;
   }
 
   .hero-top-logo{
-    right:auto;
-    left:50%;
-    top:50%;
-    transform:translate(-50%, -50%);
-    /* Increase by ~40% (from 112px) */
-    width:157px;
-    height:157px;
-    border-radius:26px;
+    position:relative;
+    inset:auto;
+    transform:none;
+    margin:0 auto 18px;
+    width:var(--home-hero-logo-size);
+    height:var(--home-hero-logo-size);
+    border-radius:28px;
   }
-}
 
-/* Make the hero message sit higher, cleaner */
-.hero--home.hero--full{
-  align-items:center;
-  padding-bottom:44px;
+  .hero--home .hero-content{
+    width:100%;
+  }
 }
 
 .hero--home::after{
@@ -311,6 +407,221 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
   inset:0;
   z-index:-1;
   display:none;
+}
+
+/* Mission + Vision (layout inspired by provided reference image) */
+.mv{
+  padding:34px 0 54px;
+}
+
+.mv-shell{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  padding:28px;
+  /* Match the homepage dark theme (instead of the previous white card) */
+  background:
+    radial-gradient(900px 520px at 12% 0%, rgba(31,182,255,.22), transparent 62%),
+    radial-gradient(700px 520px at 92% 12%, rgba(45,212,255,.16), transparent 58%),
+    linear-gradient(180deg, rgba(4,26,39,.92), rgba(6,34,53,.90));
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  color:var(--text);
+}
+
+.mv-shell::before{
+  content:"";
+  position:absolute;
+  right:-120px;
+  top:-160px;
+  width:520px;
+  height:520px;
+  background:radial-gradient(circle at 30% 30%, rgba(45,212,255,.28), rgba(31,182,255,.10) 55%, transparent 72%);
+  filter:saturate(1.05);
+  pointer-events:none;
+}
+
+.mv-shell::after{
+  content:"";
+  position:absolute;
+  left:18px;
+  top:18px;
+  width:150px;
+  height:120px;
+  background:
+    radial-gradient(circle at 2px 2px, rgba(230,244,255,.16) 2px, transparent 2.5px);
+  background-size:14px 14px;
+  opacity:.55;
+  pointer-events:none;
+}
+
+.mv-hero{
+  position:relative;
+  display:grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap:22px;
+  align-items:stretch;
+  z-index:1;
+  margin-bottom:18px;
+}
+
+.mv-copy{
+  padding:14px 6px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.mv-hero{
+  position:relative;
+  display:grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap:22px;
+  align-items:stretch;
+  z-index:1;
+  margin-bottom:18px;
+}
+
+.mv-copy{
+  padding:14px 6px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.mv-kicker{
+  display:inline-flex;
+  width:fit-content;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(31,182,255,.12);
+  color:rgba(230,244,255,.92);
+  font-weight:800;
+  letter-spacing:.3px;
+  font-size:12px;
+}
+
+.mv-title{
+  margin:14px 0 0;
+  font-size:44px;
+  line-height:1.05;
+  letter-spacing:.2px;
+  color:var(--text);
+}
+
+.mv-media{
+  position:relative;
+  border-radius:24px;
+  overflow:hidden;
+  min-height:260px;
+  border:1px solid rgba(255,255,255,.14);
+  background:
+    radial-gradient(600px 360px at 10% 10%, rgba(45,212,255,.25), transparent 60%),
+    radial-gradient(600px 360px at 90% 20%, rgba(31,182,255,.18), transparent 60%),
+    linear-gradient(180deg, rgba(6,34,53,.06), rgba(6,34,53,.08));
+}
+
+.mv-media img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  filter:saturate(1.05) contrast(1.02);
+}
+
+/* Center logo + lightning animation overlay inside Mission/Vision media */
+.mv-media-logo{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%, -50%);
+  width:128px;
+  height:128px;
+  border-radius:26px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.18);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.14),
+    0 22px 70px rgba(0,0,0,.35);
+}
+
+/* Dedicated corner bolt element (top-left) inside mv-media */
+.mv-media .corner-bolt{
+  position:absolute;
+  display:block;
+  left:14px;
+  top:14px;
+  width:160px;
+  height:160px;
+  background:linear-gradient(135deg,
+    rgba(255,255,255,0) 0%,
+    rgba(45,212,255,.9) 30%,
+    rgba(255,255,255,1) 50%,
+    rgba(31,182,255,.9) 70%,
+    rgba(255,255,255,0) 100%
+  );
+  clip-path:polygon(
+    62% 0%, 80% 0%,
+    54% 44%, 76% 44%,
+    34% 100%, 48% 62%,
+    30% 62%
+  );
+  opacity:1;
+  filter:drop-shadow(0 0 26px rgba(45,212,255,.95));
+  pointer-events:none;
+  z-index:4;
+  animation:corner-bolt 2.2s ease-in-out infinite;
+}
+
+/* Ensure the overlay sits above the image */
+.mv-media > img{position:relative; z-index:0}
+.mv-media-logo{z-index:2}
+
+/* If the older pseudo-element bolt exists, hide it (the real element is used now) */
+.mv-media::after{display:none}
+
+.mv-media::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(135deg, rgba(255,255,255,.45), rgba(255,255,255,0) 45%);
+  pointer-events:none;
+}
+
+.mv-grid{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:16px;
+}
+
+.mv-card{
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(10,44,64,.62);
+}
+
+.mv-card h2{
+  margin:0 0 10px;
+  font-size:18px;
+  letter-spacing:.1px;
+  color:var(--text);
+}
+
+.mv-card p{
+  margin:0;
+  color:rgba(230,244,255,.82);
+  line-height:1.7;
+}
+
+@media (max-width: 900px){
+  .mv-title{font-size:34px}
+  .mv-hero{grid-template-columns: 1fr}
+  .mv-grid{grid-template-columns: 1fr}
 }
 
 /* Intro section placed directly below the hero image */
@@ -658,6 +969,18 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
   animation:corner-bolt 2.2s ease-in-out infinite;
 }
 
+/* Make the on-hero lightning bolt a bit bigger for the larger logo */
+.hero-top-logo.spark-logo::before{
+  width:76px;
+  height:76px;
+  left:8px;
+  top:8px;
+  opacity:.62;
+  filter:drop-shadow(0 0 22px rgba(45,212,255,.85));
+}
+
+/* (Hero icon/shine behavior reverted to defaults) */
+
 @keyframes corner-bolt{
   0%, 20%{opacity:.45; transform:translateX(-10%) rotate(-10deg) scale(.96)}
   24%{opacity:1; transform:translateX(0) rotate(-6deg) scale(1.02)}
@@ -710,8 +1033,7 @@ header.site-header .brand-title strong{color:var(--menu-link); font-weight:800}
 }
 
 /* Leadership photo overrides */
-.person img.person-photo--cover{object-fit:cover}
-.person img.person-photo--joel{object-position:50% 0%}
+/* (kept simple so CEO and CCEO frame the same way) */
 
 .person-meta{
   padding:0 4px 4px;
@@ -929,11 +1251,7 @@ footer{
   /* Leadership photos (original mobile behavior) */
   .person img{aspect-ratio: 16 / 9; object-position:center}
 
-  /* Keep the CCEO photo framing consistent on mobile */
-  .person img.person-photo--joel{
-    aspect-ratio: 4 / 5;
-    object-position:50% 0%;
-  }
+  /* (no per-person cropping overrides) */
 }
 
 @media (max-width: 560px){
@@ -954,7 +1272,7 @@ footer{
   .header-inner{height:auto; align-items:flex-start; padding-top:10px; padding-bottom:10px}
 
   /* Compact brand so the header always fits on phones */
-  .logo-wrap{width:46px; height:46px; border-radius:12px}
+  header.site-header .logo-wrap{width:46px; height:46px; border-radius:12px}
   header.site-header .brand img{width:46px; height:46px; border-radius:12px}
   body.home header.site-header .brand img{
     width:46px;
@@ -969,9 +1287,9 @@ footer{
   .brand-title strong{font-size:14px}
   .brand-title span{font-size:11px}
 
-  /* Make header contents shrink properly instead of forcing page-wide overflow */
-  .header-inner{justify-content:flex-start}
-  .brand{flex:0 1 auto; max-width:48%; overflow:hidden}
+  /* Header layout on small phones (nav is now a drawer, so keep header simple) */
+  .header-inner{justify-content:space-between}
+  .brand{flex:1 1 auto; max-width:calc(100% - 60px); overflow:hidden}
   .brand-title{min-width:0; overflow:hidden}
   .brand-title strong{
     display:block;
@@ -981,27 +1299,27 @@ footer{
     white-space:nowrap;
   }
   .brand-title span{display:none}
-  nav.site-nav{
-    margin-left:auto;
-    max-width:52%;
-    flex-wrap:wrap;
-    overflow-x:visible;
-    justify-content:flex-end;
+
+  /* Ensure the drawer nav styles win over older small-phone header nav rules */
+  header.site-header nav.site-nav{
+    left:12px;
+    right:12px;
+    max-width:none;
+    margin-left:0;
+    flex-wrap:nowrap;
+    justify-content:flex-start;
   }
 
-  nav.site-nav{gap:6px}
-  nav.site-nav a{padding:7px 8px; font-size:13px}
+  header.site-header nav.site-nav a{font-size:14px}
 
   /* Reduce empty space at the bottom of the hero on small phones */
   .hero--home.hero--full{padding-bottom:70px}
 
   /* Prevent decorative pseudo-elements from increasing scroll width on small screens */
-  .mv-shell::before,
-  .mv-shell::after{display:none}
-
   /* Reduce decorative effects that can contribute to horizontal scroll on some mobile browsers */
-  .logo-wrap::after,
-  .logo-wrap.spark-logo::before{display:none}
+  /* Keep decorative effects off on small phones EXCEPT for the hero tile */
+  .logo-wrap:not(.hero-top-logo)::after,
+  .logo-wrap.spark-logo:not(.hero-top-logo)::before{display:none}
 
   .logo-wrap.spark-logo img{
     animation:none;
@@ -1011,6 +1329,8 @@ footer{
 
   .team-logo{overflow:hidden}
 }
+
+/* (Hero icon/shine behavior reverted to defaults) */
 
 @media (max-width: 420px){
   header.site-header .container{padding:0 12px}
@@ -1023,225 +1343,5 @@ footer{
   *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important}
 }
 
-/* Mission + Vision (layout inspired by provided reference image) */
-.mv{
-  padding:34px 0 54px;
-}
 
-.mv-shell{
-  position:relative;
-  overflow:hidden;
-  border-radius:28px;
-  padding:28px;
-  background:rgba(255,255,255,.94);
-  border:1px solid rgba(10,44,64,.12);
-  box-shadow:0 24px 70px rgba(0,0,0,.25);
-  color:#0a2c40;
-}
-
-.mv-shell::before{
-  content:"";
-  position:absolute;
-  right:-120px;
-  top:-160px;
-  width:520px;
-  height:520px;
-  background:radial-gradient(circle at 30% 30%, rgba(45,212,255,.55), rgba(31,182,255,.25) 55%, transparent 72%);
-  filter:saturate(1.05);
-  pointer-events:none;
-}
-
-.mv-shell::after{
-  content:"";
-  position:absolute;
-  left:18px;
-  top:18px;
-  width:150px;
-  height:120px;
-  background:
-    radial-gradient(circle at 2px 2px, rgba(10,44,64,.18) 2px, transparent 2.5px);
-  background-size:14px 14px;
-  opacity:.55;
-  pointer-events:none;
-}
-
-.mv-hero{
-  position:relative;
-  display:grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap:22px;
-  align-items:stretch;
-  z-index:1;
-  margin-bottom:18px;
-}
-
-.mv-copy{
-  padding:14px 6px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-
-.mv-kicker{
-  display:inline-flex;
-  width:fit-content;
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid rgba(10,44,64,.14);
-  background:rgba(31,182,255,.12);
-  color:#062235;
-  font-weight:800;
-  letter-spacing:.3px;
-  font-size:12px;
-}
-
-.mv-title{
-  margin:14px 0 0;
-  font-size:44px;
-  line-height:1.05;
-  letter-spacing:.2px;
-}
-
-.mv-media{
-  position:relative;
-  border-radius:24px;
-  overflow:hidden;
-  min-height:260px;
-  border:1px solid rgba(10,44,64,.12);
-  background:
-    radial-gradient(600px 360px at 10% 10%, rgba(45,212,255,.25), transparent 60%),
-    radial-gradient(600px 360px at 90% 20%, rgba(31,182,255,.18), transparent 60%),
-    linear-gradient(180deg, rgba(6,34,53,.06), rgba(6,34,53,.08));
-}
-
-.mv-media img{
-  width:100%;
-  height:100%;
-  display:block;
-  object-fit:cover;
-  filter:saturate(1.05) contrast(1.02);
-}
-
-/* Center logo + lightning animation overlay inside Mission/Vision media */
-.mv-media-logo{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%, -50%);
-  width:128px;
-  height:128px;
-  border-radius:26px;
-  border:1px solid rgba(255,255,255,.22);
-  background:rgba(255,255,255,.18);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.14),
-    0 22px 70px rgba(0,0,0,.35);
-}
-
-/* Dedicated corner bolt element (top-left) inside mv-media */
-.mv-media .corner-bolt{
-  position:absolute;
-  display:block;
-  left:14px;
-  top:14px;
-  width:160px;
-  height:160px;
-  background:linear-gradient(135deg,
-    rgba(255,255,255,0) 0%,
-    rgba(45,212,255,.9) 30%,
-    rgba(255,255,255,1) 50%,
-    rgba(31,182,255,.9) 70%,
-    rgba(255,255,255,0) 100%
-  );
-  clip-path:polygon(
-    62% 0%, 80% 0%,
-    54% 44%, 76% 44%,
-    34% 100%, 48% 62%,
-    30% 62%
-  );
-  opacity:1;
-  filter:drop-shadow(0 0 26px rgba(45,212,255,.95));
-  pointer-events:none;
-  z-index:4;
-  animation:corner-bolt 2.2s ease-in-out infinite;
-}
-
-/* Ensure the overlay sits above the image */
-.mv-media > img{position:relative; z-index:0}
-.mv-media-logo{z-index:2}
-
-/* If the older pseudo-element bolt exists, hide it (the real element is used now) */
-.mv-media::after{display:none}
-
-.mv-media::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:1;
-  background:linear-gradient(135deg, rgba(255,255,255,.45), rgba(255,255,255,0) 45%);
-  pointer-events:none;
-}
-
-/* Corner lightning (top-left), like the header logo flash */
-.mv-media::after{
-  content:"";
-  position:absolute;
-  left:18px;
-  top:18px;
-  width:110px;
-  height:110px;
-  background:linear-gradient(135deg,
-    rgba(255,255,255,0) 0%,
-    rgba(45,212,255,.68) 32%,
-    rgba(255,255,255,1) 50%,
-    rgba(31,182,255,.68) 68%,
-    rgba(255,255,255,0) 100%
-  );
-  clip-path:polygon(
-    62% 0%, 80% 0%,
-    54% 44%, 76% 44%,
-    34% 100%, 48% 62%,
-    30% 62%
-  );
-  /* Keep it clearly visible on the photo */
-  opacity:.78;
-  filter:drop-shadow(0 0 22px rgba(45,212,255,.9));
-  mix-blend-mode:normal;
-  pointer-events:none;
-  z-index:3;
-  animation:corner-bolt 2.2s ease-in-out infinite;
-}
-
-.mv-grid{
-  position:relative;
-  z-index:1;
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:16px;
-}
-
-.mv-card{
-  padding:18px;
-  border-radius:22px;
-  border:1px solid rgba(10,44,64,.12);
-  background:rgba(255,255,255,.9);
-}
-
-.mv-card h2{
-  margin:0 0 10px;
-  font-size:18px;
-  letter-spacing:.1px;
-}
-
-.mv-card p{
-  margin:0;
-  color:rgba(10,44,64,.82);
-  line-height:1.7;
-}
-
-@media (max-width: 900px){
-  .mv-title{font-size:34px}
-  .mv-hero{grid-template-columns: 1fr}
-  .mv-grid{grid-template-columns: 1fr}
-}
 

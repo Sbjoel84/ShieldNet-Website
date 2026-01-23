@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <title>ShieldNet AI – Safety Intelligence</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css?v=12" />
+  <link rel="stylesheet" href="styles.css?v=25" />
 </head>
 <body class="home">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -16,18 +16,26 @@
           <img src="assets/LOGO.svg" alt="" />
         </span>
         <span class="brand-title">
-          <strong>SHIELDNETCORE</strong>
+          <strong>SHIELDNET<span class="core">CORE</span></strong>
           <span>Technologies</span>
         </span>
       </a>
 
-      <nav class="site-nav" aria-label="Primary">
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <nav id="primary-nav" class="site-nav" aria-label="Primary" data-primary-nav>
         <a href="#features">Features</a>
         <a href="#about">About</a>
         <a href="#leadership">Leadership</a>
       </nav>
     </div>
   </header>
+
+  <div class="nav-overlay" hidden data-nav-overlay aria-hidden="true"></div>
 
   <main id="main">
     <section class="hero hero--full hero--home" aria-label="Home">
@@ -38,7 +46,7 @@
       <div class="container hero-content">
         <div class="panel hero-copy hero-copy--left">
           <div class="kicker">Safety Intelligence</div>
-          <h1 class="display">SHIELDNETCORE TECHNOLOGIES</h1>
+          <h1 class="display">SHIELDNET<span class="core">CORE</span> TECHNOLOGIES</h1>
           <p class="lead">
             ShieldNet AI is our real-time safety awareness and emergency support platform-built to
             help users understand risk, trigger SOS workflows, and share critical information when
@@ -84,7 +92,7 @@
             <article class="mv-card" id="vision-section">
               <h2>Vision</h2>
               <p>
-                To build Africa’s most trusted safety intelligence network, where every movement is
+                To build Africaâ€™s most trusted safety intelligence network, where every movement is
                 informed, every threat is anticipated, and no one faces danger alone.
               </p>
             </article>
@@ -219,7 +227,7 @@
               />
               <div class="about-body">
                 <p>
-                  <strong class="about-inline-title">SHIELDNETCORE TECHNOLOGIES:</strong>&nbsp;builds safety and intelligence tools designed to support
+                  <strong class="about-inline-title">SHIELDNET<span class="core">CORE</span> TECHNOLOGIES:</strong>&nbsp;builds safety and intelligence tools designed to support
                   people during uncertain situations. Our focus is reliable, permission-based features
                   that help users act quickly.
                 </p>
@@ -236,7 +244,7 @@
               />
               <div class="about-body">
                 <p>
-                  <strong class="about-inline-title">ShieldNet AI:</strong>&nbsp;is the company’s flagship safety product, combining awareness signals
+                  <strong class="about-inline-title">ShieldNet AI:</strong>&nbsp;is the companyâ€™s flagship safety product, combining awareness signals
                   with emergency communication workflows.
                 </p>
               </div>
@@ -267,7 +275,7 @@
           </div>
 
           <div class="person" role="listitem">
-            <img class="person-photo person-photo--cover person-photo--joel" src="assets/JOEL%20YAHAYA%20(CCEO).jpg" alt="Joel Yahaya - Co-CEO (CCEO)" />
+            <img src="assets/JOEL%20YAHAYA%20(CCEO).png" alt="Joel Yahaya - CCEO" />
             <div class="person-meta">
               <div class="person-text">
                 <strong>Joel Yahaya</strong>
@@ -302,8 +310,8 @@
             <img src="assets/LOGO.svg" alt="ShieldNetCore Technologies logo" />
           </span>
           <div class="footer-brand-text">
-            <strong>SHIELDNETCORE TECHNOLOGIES</strong>
-            <span>Safety Intelligence</span>
+            <strong>SHIELDNET<span class="core">CORE</span></strong>
+            <span>Technologies</span>
           </div>
         </div>
         <p class="footer-note">
@@ -327,7 +335,7 @@
 
     <div class="container footer-bottom">
       <div>
-        © <span id="year"></span> SHIELDNETCORE TECHNOLOGIES. All rights reserved.
+        © <span id="year"></span> SHIELDNET<span class="core">CORE</span> Technologies. All rights reserved.
       </div>
       <div class="footer-bottom-links">
         <a href="privacy.html">Privacy Policy</a>
@@ -342,6 +350,8 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
+
+  <script src="nav.js" defer></script>
 
 </body>
 </html>

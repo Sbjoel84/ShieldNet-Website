@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
   <title>Privacy Policy – ShieldNet AI</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=25" />
 </head>
 <body class="page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -14,12 +14,18 @@
       <a class="brand" href="index.html" aria-label="ShieldNet AI home">
         <img src="assets/LOGO.svg" alt="ShieldNetCore Technologies logo" />
         <span class="brand-title">
-          <strong>SHIELDNETCORE</strong>
+          <strong>SHIELDNET<span class="core">CORE</span></strong>
           <span>Technologies</span>
         </span>
       </a>
 
-      <nav class="site-nav" aria-label="Primary">
+      <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <nav id="primary-nav" class="site-nav" aria-label="Primary" data-primary-nav>
         <a href="index.html#features">Features</a>
         <a href="index.html#about">About</a>
         <a href="index.html#contact">Contact</a>
@@ -29,6 +35,8 @@
     </div>
   </header>
 
+  <div class="nav-overlay" hidden data-nav-overlay aria-hidden="true"></div>
+
   <div class="container">
     <main id="main" class="panel">
       <h1>Privacy Policy - ShieldNet AI</h1>
@@ -36,7 +44,7 @@
     <p><strong>Last Updated:</strong> 29/12/2025</p>
 
     <p>
-      ShieldNet AI is operated by SHIELDNETCORE TECHNOLOGIES. We are committed to protecting your
+      ShieldNet AI is operated by SHIELDNET<span class="core">CORE</span> TECHNOLOGIES. We are committed to protecting your
       privacy and handling your data responsibly.
     </p>
 
@@ -87,6 +95,8 @@
     </p>
     </main>
   </div>
+
+  <script src="nav.js" defer></script>
 
 </body>
 </html>
