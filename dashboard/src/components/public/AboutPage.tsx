@@ -145,13 +145,15 @@ export function AboutPage() {
 
         {/* CTA */}
         <section className="rounded-2xl bg-green-500/5 border border-green-500/20 p-10 text-center">
-          <ShieldCheck className="w-12 h-12 text-green-400 mx-auto mb-4" />
+          <div className="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mx-auto mb-6">
+            <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
+          </div>
           <h2 className="text-2xl font-bold mb-3">Join the ShieldNet Community</h2>
           <p className="text-muted-foreground max-w-lg mx-auto mb-6">
             Whether you're a buyer, farmer, agent, or investor — ShieldNet protects your every move.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="shield" size="lg" onClick={() => navigate('/auth')}>Get Started Free</Button>
+            <Button variant="shield" size="lg" onClick={() => navigate('/contact')}>Get Started Free</Button>
             <Button variant="outline" size="lg" onClick={() => navigate('/contact')}>Contact Us</Button>
           </div>
         </section>
