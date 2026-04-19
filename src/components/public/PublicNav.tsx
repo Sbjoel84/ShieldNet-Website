@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { Menu, X, Shield } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
@@ -52,17 +52,10 @@ export function PublicNav() {
 
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
-          {profile ? (
-            <Button variant="shield" size="sm" onClick={() => navigate('/dashboard')}>
-              Dashboard
-            </Button>
-          ) : (
+          {!profile && (
             <>
-              <Button variant="ghost" size="sm" className="hidden sm:flex" onClick={() => navigate('/auth')}>
-                Sign In
-              </Button>
-              <Button variant="shield" size="sm" onClick={() => navigate('/auth')}>
-                Get Started
+              <Button variant="shield" size="sm" disabled>
+                Not Available Yet
               </Button>
             </>
           )}
@@ -93,16 +86,11 @@ export function PublicNav() {
               {label}
             </NavLink>
           ))}
-          <div className="pt-3 border-t border-border flex gap-2">
-            {profile ? (
-              <Button variant="shield" className="flex-1" onClick={() => { navigate('/dashboard'); setOpen(false) }}>Dashboard</Button>
-            ) : (
-              <>
-                <Button variant="outline" className="flex-1" onClick={() => { navigate('/auth'); setOpen(false) }}>Sign In</Button>
-                <Button variant="shield" className="flex-1" onClick={() => { navigate('/auth'); setOpen(false) }}>Get Started</Button>
-              </>
-            )}
-          </div>
+          {!profile && (
+            <div className="pt-3 border-t border-border flex gap-2">
+              <Button variant="shield" className="w-full" disabled>Not Available Yet</Button>
+            </div>
+          )}
         </div>
       )}
     </header>

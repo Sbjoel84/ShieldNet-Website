@@ -111,8 +111,8 @@ export function LandingPage() {
             <Button variant="shield" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/properties')}>
               Explore ShieldHome <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/auth')}>
-              Get Started Free
+            <Button variant="outline" size="lg" className="h-12 px-8 text-base" disabled>
+              Registration Not Available Yet
             </Button>
           </div>
         </div>
@@ -297,8 +297,8 @@ export function LandingPage() {
             Join thousands of Nigerians who use ShieldNet to buy, sell, farm, and invest — protected by AI at every step.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="shield" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/auth')}>
-              Create Free Account <ArrowRight className="ml-2 w-4 h-4" />
+            <Button variant="shield" size="lg" className="h-12 px-8 text-base" disabled>
+              Registration Not Available Yet
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/contact')}>
               Talk to Us

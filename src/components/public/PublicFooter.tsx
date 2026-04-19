@@ -37,8 +37,6 @@ export function PublicFooter() {
                 { to: '/ai-tools',   label: 'ShieldNet AI' },
                 { to: '/farms',      label: 'ShieldFarm' },
                 { to: '/properties', label: 'ShieldNet Properties' },
-                { to: '/auth',       label: 'Agent Portal' },
-                { to: '/dashboard',  label: 'Dashboard' },
               ].map(({ to, label }) => (
                 <li key={to}>
                   <Link to={to} className="text-sm text-muted-foreground hover:text-green-400 transition-colors">{label}</Link>

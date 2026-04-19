@@ -86,8 +86,8 @@ export function PublicAITools() {
             Nigeria's most advanced AI security platform — delivering real-time threat intelligence, fraud detection, identity verification, and risk scoring for individuals and enterprises.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="shield" size="lg" className="h-12 px-8" onClick={() => navigate('/auth')}>
-              Try AI Tools Free <ArrowRight className="ml-2 w-4 h-4" />
+            <Button variant="shield" size="lg" className="h-12 px-8" disabled>
+              Not Available Yet
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8" onClick={() => navigate('/contact')}>
               Request Demo
@@ -130,8 +130,8 @@ export function PublicAITools() {
           <p className="text-muted-foreground max-w-lg mx-auto mb-6">
             All AI tools are available free with your ShieldNet account. No API keys, no setup — just sign up and go.
           </p>
-          <Button variant="shield" size="lg" onClick={() => navigate('/auth')}>
-            Create Free Account
+          <Button variant="shield" size="lg" disabled>
+            Registration Not Available Yet
           </Button>
         </div>
       </div>
