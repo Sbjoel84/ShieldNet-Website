@@ -6,56 +6,37 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/hooks/useAuth'
 import type { City } from '@/lib/types'
 
+// Backend integration pending — will connect to ShieldNet AI API
+
 type AccountType = 'agent' | 'farmer'
-type Step = 'choose-type' | 'fill-form' | 'otp' | 'saving' | 'success'
+type Step = 'choose-type' | 'fill-form' | 'saving' | 'success'
 
 interface AgentForm {
-  fullName: string
-  email: string
-  phone: string
-  city: City | ''
-  agencyName: string
-  bio: string
+  fullName: string; email: string; phone: string
+  city: City | ''; agencyName: string; bio: string; password: string
 }
-
 interface FarmerForm {
-  fullName: string
-  email: string
-  phone: string
-  city: City | ''
-  farmName: string
-  cropType: string
-  farmSizeHa: string
-  farmLocation: string
-}
-
-const CITY_COORDS: Record<City, { lat: number; lng: number }> = {
-  Abuja: { lat: 9.0765, lng: 7.3986 },
-  Lagos: { lat: 6.5244, lng: 3.3792 },
+  fullName: string; email: string; phone: string
+  city: City | ''; farmName: string; cropType: string
+  farmSizeHa: string; farmLocation: string; password: string
 }
 
 export function RegisterPage() {
-  const { signInWithEmail, verifyOtp } = useAuth()
   const navigate = useNavigate()
-
-  const [step, setStep] = useState<Step>('choose-type')
+  const [step, setStep]               = useState<Step>('choose-type')
   const [accountType, setAccountType] = useState<AccountType | null>(null)
-  const [otp, setOtp] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [loading, setLoading]         = useState(false)
+  const [error, setError]             = useState('')
 
   const [agentForm, setAgentForm] = useState<AgentForm>({
-    fullName: '', email: '', phone: '', city: '', agencyName: '', bio: '',
+    fullName: '', email: '', phone: '', city: '', agencyName: '', bio: '', password: '',
   })
   const [farmerForm, setFarmerForm] = useState<FarmerForm>({
-    fullName: '', email: '', phone: '', city: '', farmName: '', cropType: '', farmSizeHa: '', farmLocation: '',
+    fullName: '', email: '', phone: '', city: '', farmName: '',
+    cropType: '', farmSizeHa: '', farmLocation: '', password: '',
   })
-
-  const email = accountType === 'agent' ? agentForm.email : farmerForm.email
 
   function agentField(key: keyof AgentForm) {
     return {
@@ -72,65 +53,16 @@ export function RegisterPage() {
     }
   }
 
-  function agentFormValid() {
-    return agentForm.fullName && agentForm.email && agentForm.phone && agentForm.city
-  }
-  function farmerFormValid() {
-    return farmerForm.fullName && farmerForm.email && farmerForm.phone && farmerForm.city
-      && farmerForm.farmName && farmerForm.cropType
-  }
+  const agentValid  = () => !!(agentForm.fullName && agentForm.email && agentForm.phone && agentForm.city && agentForm.password)
+  const farmerValid = () => !!(farmerForm.fullName && farmerForm.email && farmerForm.phone && farmerForm.city && farmerForm.farmName && farmerForm.cropType && farmerForm.password)
 
-  async function handleSendOtp() {
+  async function handleSubmit() {
     setError('')
     setLoading(true)
-    const { error } = await signInWithEmail(email)
-    setLoading(false)
-    if (error) { setError(error); return }
-    setStep('otp')
-  }
-
-  async function handleVerifyAndCreate() {
-    setError('')
-    setLoading(true)
-
-    const { error: otpError } = await verifyOtp(email, otp)
-    if (otpError) { setError(otpError); setLoading(false); return }
-
     setStep('saving')
 
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setError('Session not found. Please try again.'); setLoading(false); return }
-
-    if (accountType === 'agent') {
-      await supabase.from('profiles').update({
-        full_name: agentForm.fullName,
-        phone: agentForm.phone,
-        city: agentForm.city || null,
-        role: 'agent',
-      }).eq('id', user.id)
-    } else {
-      await supabase.from('profiles').update({
-        full_name: farmerForm.fullName,
-        phone: farmerForm.phone,
-        city: farmerForm.city || null,
-        role: 'farmer',
-      }).eq('id', user.id)
-
-      if (farmerForm.farmName) {
-        const coords = farmerForm.city ? CITY_COORDS[farmerForm.city as City] : CITY_COORDS.Abuja
-        await supabase.from('farms').insert({
-          owner_id: user.id,
-          owner_name: farmerForm.fullName,
-          name: farmerForm.farmName,
-          location: farmerForm.farmLocation || farmerForm.city,
-          city: farmerForm.city,
-          lat: coords.lat,
-          lng: coords.lng,
-          crop_type: farmerForm.cropType,
-          area_hectares: parseFloat(farmerForm.farmSizeHa) || 1,
-        })
-      }
-    }
+    // TODO: replace with ShieldNet AI registration API call
+    await new Promise(r => setTimeout(r, 1000))
 
     setLoading(false)
     setStep('success')
@@ -144,20 +76,17 @@ export function RegisterPage() {
       </div>
 
       <div className="relative w-full max-w-lg">
-        {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 mb-5 ring-2 ring-green-500/30">
             <img src="/logo-alt.svg" alt="ShieldNet" className="w-20 h-20 object-contain bg-white" />
           </div>
           <h1 className="text-2xl font-bold">Create Your ShieldNet Account</h1>
-          <p className="text-sm text-muted-foreground mt-1 text-center">
-            Join thousands of Nigerians protected by AI
-          </p>
+          <p className="text-sm text-muted-foreground mt-1 text-center">Join thousands of Nigerians protected by AI</p>
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-6 shadow-xl">
 
-          {/* ── STEP 1: Choose account type ── */}
+          {/* ── STEP 1: Choose type ── */}
           {step === 'choose-type' && (
             <div className="space-y-5">
               <div>
@@ -166,6 +95,7 @@ export function RegisterPage() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
+                  type="button"
                   onClick={() => { setAccountType('agent'); setStep('fill-form') }}
                   className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-border hover:border-blue-500/50 hover:bg-blue-500/5 transition-all text-left"
                 >
@@ -184,6 +114,7 @@ export function RegisterPage() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => { setAccountType('farmer'); setStep('fill-form') }}
                   className="group flex flex-col items-start gap-3 p-5 rounded-xl border border-border hover:border-green-500/50 hover:bg-green-500/5 transition-all text-left"
                 >
@@ -201,7 +132,6 @@ export function RegisterPage() {
                   </span>
                 </button>
               </div>
-
               <p className="text-center text-xs text-muted-foreground pt-2">
                 Already have an account?{' '}
                 <Link to="/auth" className="text-green-400 hover:underline font-medium">Sign in</Link>
@@ -209,11 +139,11 @@ export function RegisterPage() {
             </div>
           )}
 
-          {/* ── STEP 2a: Property Agent form ── */}
+          {/* ── STEP 2a: Agent form ── */}
           {step === 'fill-form' && accountType === 'agent' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-1">
-                <button onClick={() => setStep('choose-type')} className="text-muted-foreground hover:text-foreground">
+                <button type="button" aria-label="Go back" onClick={() => setStep('choose-type')} className="text-muted-foreground hover:text-foreground">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div>
@@ -257,24 +187,19 @@ export function RegisterPage() {
 
               <div className="space-y-1.5">
                 <Label htmlFor="bio">Brief Bio / About You</Label>
-                <Textarea
-                  id="bio"
-                  placeholder="Tell buyers a bit about yourself and your experience..."
-                  rows={3}
-                  {...agentField('bio')}
-                />
+                <Textarea id="bio" placeholder="Tell buyers a bit about yourself..." rows={3} {...agentField('bio')} />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password *</Label>
+                <Input id="password" type="password" placeholder="Min. 8 characters" {...agentField('password')} />
               </div>
 
               {error && <p className="text-xs text-destructive">{error}</p>}
 
-              <Button
-                variant="shield"
-                className="w-full"
-                onClick={handleSendOtp}
-                disabled={!agentFormValid() || loading}
-              >
+              <Button variant="shield" className="w-full" onClick={handleSubmit} disabled={!agentValid() || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
-                Continue — Send Verification Code
+                Create Account
               </Button>
             </div>
           )}
@@ -283,7 +208,7 @@ export function RegisterPage() {
           {step === 'fill-form' && accountType === 'farmer' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-1">
-                <button onClick={() => setStep('choose-type')} className="text-muted-foreground hover:text-foreground">
+                <button type="button" aria-label="Go back" onClick={() => setStep('choose-type')} className="text-muted-foreground hover:text-foreground">
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <div>
@@ -331,7 +256,7 @@ export function RegisterPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="cropType">Primary Crop *</Label>
-                  <Input id="cropType" placeholder="e.g. Maize, Tomatoes, Rice" {...farmerField('cropType')} />
+                  <Input id="cropType" placeholder="e.g. Maize, Tomatoes" {...farmerField('cropType')} />
                 </div>
               </div>
 
@@ -341,75 +266,26 @@ export function RegisterPage() {
                   <Input id="farmSize" type="number" min="0.1" step="0.1" placeholder="e.g. 5.0" {...farmerField('farmSizeHa')} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="farmLocation">Farm Location / Address</Label>
+                  <Label htmlFor="farmLocation">Farm Location</Label>
                   <Input id="farmLocation" placeholder="e.g. Kubwa, Abuja" {...farmerField('farmLocation')} />
                 </div>
               </div>
 
-              {error && <p className="text-xs text-destructive">{error}</p>}
-
-              <Button
-                variant="shield"
-                className="w-full"
-                onClick={handleSendOtp}
-                disabled={!farmerFormValid() || loading}
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
-                Continue — Send Verification Code
-              </Button>
-            </div>
-          )}
-
-          {/* ── STEP 3: OTP verification ── */}
-          {step === 'otp' && (
-            <div className="space-y-4">
-              <button
-                onClick={() => setStep('fill-form')}
-                className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-              >
-                <ArrowLeft className="w-3 h-3" /> Back
-              </button>
-              <div className="text-center space-y-1">
-                <p className="text-sm font-medium">Check your inbox</p>
-                <p className="text-xs text-muted-foreground">
-                  We sent a 6-digit code to <strong className="text-foreground">{email}</strong>
-                </p>
-              </div>
               <div className="space-y-1.5">
-                <Label htmlFor="otp">Verification Code</Label>
-                <Input
-                  id="otp"
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="000000"
-                  maxLength={6}
-                  className="text-center text-2xl tracking-widest font-mono"
-                  value={otp}
-                  onChange={e => setOtp(e.target.value.replace(/\D/g, ''))}
-                  onKeyDown={e => e.key === 'Enter' && otp.length === 6 && handleVerifyAndCreate()}
-                  autoFocus
-                />
+                <Label htmlFor="password">Password *</Label>
+                <Input id="password" type="password" placeholder="Min. 8 characters" {...farmerField('password')} />
               </div>
+
               {error && <p className="text-xs text-destructive">{error}</p>}
-              <Button
-                variant="shield"
-                className="w-full"
-                onClick={handleVerifyAndCreate}
-                disabled={otp.length < 6 || loading}
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                Verify & Create Account
+
+              <Button variant="shield" className="w-full" onClick={handleSubmit} disabled={!farmerValid() || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
+                Create Account
               </Button>
-              <button
-                onClick={handleSendOtp}
-                className="w-full text-xs text-muted-foreground hover:text-foreground text-center"
-              >
-                Resend code
-              </button>
             </div>
           )}
 
-          {/* ── STEP 4: Saving ── */}
+          {/* ── Saving ── */}
           {step === 'saving' && (
             <div className="flex flex-col items-center gap-4 py-6">
               <Loader2 className="w-10 h-10 animate-spin text-green-400" />
@@ -417,7 +293,7 @@ export function RegisterPage() {
             </div>
           )}
 
-          {/* ── STEP 5: Success ── */}
+          {/* ── Success ── */}
           {step === 'success' && (
             <div className="flex flex-col items-center gap-4 py-4 text-center">
               <CheckCircle2 className="w-14 h-14 text-green-400" />
@@ -425,9 +301,7 @@ export function RegisterPage() {
                 <p className="text-base font-semibold">Account Created!</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Welcome to ShieldNet.{' '}
-                  {accountType === 'farmer'
-                    ? 'Your farm profile is ready.'
-                    : 'You can now list properties.'}
+                  {accountType === 'farmer' ? 'Your farm profile is ready.' : 'You can now list properties.'}
                 </p>
               </div>
               <Button variant="shield" className="w-full mt-2" onClick={() => navigate('/')}>
@@ -435,6 +309,7 @@ export function RegisterPage() {
               </Button>
             </div>
           )}
+
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
