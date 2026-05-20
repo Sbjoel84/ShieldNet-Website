@@ -57,6 +57,9 @@ export function PublicFarms() {
       {/* Hero */}
       <div className="bg-gradient-to-b from-green-500/10 to-transparent border-b border-border py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="w-20 h-20 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-6">
+            <Wheat className="w-10 h-10 text-green-400" />
+          </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6">
             <Wheat className="w-3.5 h-3.5" />
             Powered by AI

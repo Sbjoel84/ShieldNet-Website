@@ -6,12 +6,13 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 
 const NAV_LINKS = [
-  { to: '/',            label: 'Home',       end: true },
-  { to: '/properties',  label: 'ShieldHome'  },
-  { to: '/farms',       label: 'ShieldFarm'  },
-  { to: '/ai-tools',    label: 'AI Tools'    },
-  { to: '/about',       label: 'About'       },
-  { to: '/contact',     label: 'Contact'     },
+  { to: '/',            label: 'Home',        end: true },
+  { to: '/about',       label: 'About'                  },
+  { to: '/ai-tools',    label: 'ShieldNet AI'           },
+  { to: '/properties',  label: 'ShieldHome'             },
+  { to: '/farms',       label: 'ShieldFarm'             },
+  { to: '/shieldher',   label: 'ShieldHer'              },
+  { to: '/contact',     label: 'Contact'                },
 ]
 
 export function PublicNav() {

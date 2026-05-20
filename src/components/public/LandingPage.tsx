@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom'
-import { ShieldCheck, Building2, Wheat, ArrowRight, CheckCircle2, Users, BarChart3, Star, Heart, Cpu } from 'lucide-react'
+import { ShieldCheck, Building2, Wheat, ArrowRight, CheckCircle2, Users, BarChart3, Star, Cpu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { LucideIcon } from 'lucide-react'
@@ -19,12 +19,22 @@ const SERVICES: ServiceItem[] = [
   {
     to: '/ai-tools',
     logo: '/shieldnet-ai-logo.jpg',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/20',
+    color: 'text-red-400',
+    bg: 'bg-red-500/10',
+    border: 'border-red-500/20',
     title: 'ShieldNet AI',
     desc: 'The core intelligence engine powering all Shield products — real-time safety & threat detection, fraud scoring, identity verification, and risk intelligence for individuals and enterprises.',
     cta: 'Explore ShieldNet AI',
+  },
+  {
+    to: '/shieldher',
+    logo: '/ShieldHer.png',
+    color: 'text-purple-400',
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-500/20',
+    title: 'ShieldHer',
+    desc: 'Personal protection app built for women — real-time threat alerts, emergency SOS, safe-route navigation, and community safety reporting. Safety in your pocket.',
+    cta: 'Explore ShieldHer',
   },
   {
     to: '/farms',
@@ -45,17 +55,6 @@ const SERVICES: ServiceItem[] = [
     title: 'ShieldHome',
     desc: 'AI anti-fraud tool for property titles & listings. Every listing is scanned, scored, and Shield Verified before you buy, rent, or invest. Never get defrauded again.',
     cta: 'Explore ShieldHome',
-  },
-  {
-    to: '#',
-    icon: Heart,
-    color: 'text-rose-400',
-    bg: 'bg-rose-500/10',
-    border: 'border-rose-500/20',
-    title: 'ShieldHer',
-    desc: 'Personal protection app built for women — real-time threat alerts, emergency SOS, safe-route navigation, and community safety reporting. Safety in your pocket.',
-    cta: 'Coming Soon',
-    soon: true,
   },
 ]
 
@@ -92,10 +91,13 @@ export function LandingPage() {
   return (
     <div className="overflow-hidden">
       {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center">
+      <section className="relative min-h-[90vh] flex items-start">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat hero-bg" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 text-center w-full">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-20 text-center w-full">
+          <div className="flex justify-center mb-6">
+            <img src="/logo-alt.svg" alt="ShieldNet Core Technologies" className="h-64 w-auto" />
+          </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6">
             <ShieldCheck className="w-3.5 h-3.5" />
             Nigeria's #1 AI-Powered Protection Platform
@@ -146,7 +148,8 @@ export function LandingPage() {
       </section>
 
       {/* Services */}
-      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="py-20 bg-purple-500/10 border-y border-purple-500/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-14">
           <h2 className="text-3xl font-bold mb-3">Four Shields. One Platform.</h2>
           <p className="text-muted-foreground max-w-xl mx-auto">Every product runs on ShieldNet AI — built for Nigerian buyers, farmers, women, and enterprises.</p>
@@ -177,6 +180,7 @@ export function LandingPage() {
               </span>
             </Link>
           ))}
+        </div>
         </div>
       </section>
 

@@ -1,13 +1,20 @@
+import React from 'react'
+
 export function TermsOfService() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
-      <div className="mb-10">
-        <div className="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mb-6">
-          <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
+    <div>
+      {/* Hero */}
+      <div className="bg-gradient-to-b from-green-500/10 to-transparent border-b border-border py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mx-auto mb-6">
+            <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
+          </div>
+          <h1 className="text-4xl font-bold mb-3">Terms of Service</h1>
+          <p className="text-muted-foreground">Last updated: April 18, 2026</p>
         </div>
-        <h1 className="text-4xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-muted-foreground">Last updated: April 18, 2026</p>
       </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
 
       <div className="space-y-10 text-foreground/85">
 
@@ -176,6 +183,7 @@ export function TermsOfService() {
           </ul>
         </Section>
 
+      </div>
       </div>
     </div>
   )

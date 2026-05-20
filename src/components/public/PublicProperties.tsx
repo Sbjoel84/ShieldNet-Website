@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ShieldCheck, AlertTriangle, Bed, Bath, Maximize2, MapPin, Search, SlidersHorizontal, X, Phone, FileText, User, Calendar } from 'lucide-react'
+import { ShieldCheck, AlertTriangle, Bed, Bath, Maximize2, MapPin, Search, SlidersHorizontal, X, Phone, FileText, User, Calendar, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -190,13 +190,25 @@ export function PublicProperties() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-          <ShieldCheck className="w-8 h-8 text-blue-400" />ShieldNet Properties
-        </h1>
-        <p className="text-muted-foreground">Browse verified real estate listings across Abuja and Lagos.</p>
+    <div>
+      {/* Hero */}
+      <div className="bg-gradient-to-b from-blue-500/10 to-transparent border-b border-border py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="w-20 h-20 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-6">
+            <Building2 className="w-10 h-10 text-blue-400" />
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-4">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            AI-Verified Listings
+          </div>
+          <h1 className="text-4xl font-bold mb-4">ShieldHome</h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
+            Browse verified real estate listings across Abuja and Lagos. Every property is AI-scanned, fraud-scored, and Shield Verified before you buy, rent, or invest.
+          </p>
+        </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
 
       <div className="flex flex-wrap items-center gap-2 mb-6">
         <div className="relative flex-1 min-w-[180px] max-w-xs">
@@ -285,6 +297,7 @@ export function PublicProperties() {
           onSubmit={handleInquiry}
         />
       )}
+      </div>
     </div>
   )
 }

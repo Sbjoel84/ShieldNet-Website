@@ -15,6 +15,7 @@ import { PublicFarms } from '@/components/public/PublicFarms'
 import { PublicAITools } from '@/components/public/PublicAITools'
 import { AboutPage } from '@/components/public/AboutPage'
 import { ContactPage } from '@/components/public/ContactPage'
+import { ShieldHerPage } from '@/components/public/ShieldHerPage'
 import { PrivacyPolicy } from '@/components/public/PrivacyPolicy'
 import { TermsOfService } from '@/components/public/TermsOfService'
 
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path="/ai-tools" element={<PublicAITools />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/shieldher" element={<ShieldHerPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
       </Route>

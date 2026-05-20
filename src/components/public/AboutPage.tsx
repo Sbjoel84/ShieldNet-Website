@@ -27,7 +27,7 @@ const VALUES = [
 ]
 
 const MILESTONES = [
-  { year: '2023', event: 'ShieldNet founded in Abuja by Joel Yahaya and Raheem Afolabi.' },
+  { year: '2023', event: 'ShieldNet founded in Abuja by Raheem Victor and Joel Yahaya.' },
   { year: '2024', event: 'Launched ShieldHome with 200+ verified listings in Abuja — AI anti-fraud tool for property titles.' },
   { year: '2024', event: 'ShieldFarm beta launched — 500 farmers onboarded in first month.' },
   { year: '2025', event: 'Expanded to Lagos. 1,000+ ShieldHome listings and ₦50B+ in transactions protected.' },
@@ -90,24 +90,24 @@ export function AboutPage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               {
-                icon: Bot,
-                color: 'text-purple-400',
-                bg: 'bg-purple-500/10',
-                border: 'border-purple-500/20',
+                logo: '/shieldnet-ai-logo.jpg',
+                color: 'text-red-400',
+                bg: 'bg-red-500/10',
+                border: 'border-red-500/20',
                 title: 'ShieldNet AI',
                 badge: 'Core Engine',
                 desc: 'Real-time safety & threat detection backbone powering all Shield products — fraud scoring, identity verification, and risk intelligence.',
                 to: '/ai-tools',
               },
               {
-                icon: Heart,
-                color: 'text-rose-400',
-                bg: 'bg-rose-500/10',
-                border: 'border-rose-500/20',
+                logo: '/ShieldHer.png',
+                color: 'text-purple-400',
+                bg: 'bg-purple-500/10',
+                border: 'border-purple-500/20',
                 title: 'ShieldHer',
-                badge: 'Coming Soon',
+                badge: 'Live',
                 desc: 'Personal protection app for women — real-time threat alerts, emergency SOS, safe-route navigation, and community safety reporting.',
-                to: null,
+                to: '/shieldher',
               },
               {
                 icon: Wheat,
@@ -132,8 +132,11 @@ export function AboutPage() {
             ].map(p => (
               <div key={p.title} className={`p-5 rounded-2xl border ${p.border} ${p.bg} flex flex-col gap-3`}>
                 <div className="flex items-start justify-between">
-                  <p.icon className={`w-7 h-7 ${p.color}`} />
-                  <Badge className={`text-[10px] ${p.badge === 'Coming Soon' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : p.badge === 'Core Engine' ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' : 'bg-green-500/20 text-green-300 border-green-500/30'}`}>
+                  {'logo' in p && p.logo
+                    ? <img src={p.logo} alt={p.title} className="w-7 h-7 rounded-lg object-cover" />
+                    : 'icon' in p && p.icon ? <p.icon className={`w-7 h-7 ${p.color}`} /> : null
+                  }
+                  <Badge className={`text-[10px] ${p.badge === 'Coming Soon' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : p.badge === 'Core Engine' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-green-500/20 text-green-300 border-green-500/30'}`}>
                     {p.badge}
                   </Badge>
                 </div>

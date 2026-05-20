@@ -44,11 +44,21 @@ export function ContactPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-bold mb-3">Contact Us</h1>
-        <p className="text-muted-foreground max-w-xl mx-auto">Have a question, partnership idea, or just want to say hi? We'd love to hear from you.</p>
+    <div>
+      {/* Hero */}
+      <div className="bg-gradient-to-b from-green-500/10 to-transparent border-b border-border py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mx-auto mb-6">
+            <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
+          </div>
+          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+          <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
+            Have a question, partnership idea, or just want to say hi? We'd love to hear from you.
+          </p>
+        </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
 
       <div className="grid lg:grid-cols-3 gap-10">
         {/* Contact Info */}
@@ -144,6 +154,7 @@ export function ContactPage() {
             </Card>
           )}
         </div>
+      </div>
       </div>
     </div>
   )
