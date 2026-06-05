@@ -1,11 +1,12 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import type { Profile, UserRole } from '@/lib/types'
 
-// Backend integration pending — will connect to ShieldNet AI API
+const API       = import.meta.env.VITE_API_URL ?? ''
+const TOKEN_KEY = 'shieldnet_token'
 
 interface AuthState {
   profile: Profile | null
-  role: UserRole
+  role:    UserRole
   loading: boolean
 }
 
@@ -18,13 +19,41 @@ const AuthContext = createContext<(AuthState & AuthActions) | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  async function signIn(_email: string, _password: string) {
-    // TODO: replace with ShieldNet AI auth API call
-    return { error: 'Backend not connected yet.' }
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY)
+    if (!token) { setLoading(false); return }
+
+    fetch(`${API}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => setProfile(data?.profile ?? null))
+      .catch(() => setProfile(null))
+      .finally(() => setLoading(false))
+  }, [])
+
+  async function signIn(email: string, password: string) {
+    try {
+      const res  = await fetch(`${API}/api/auth/login`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) return { error: data.error ?? 'Sign in failed.' }
+
+      localStorage.setItem(TOKEN_KEY, data.token)
+      setProfile(data.profile)
+      return { error: null }
+    } catch {
+      return { error: 'Could not connect to server. Please try again.' }
+    }
   }
 
   async function signOut() {
+    localStorage.removeItem(TOKEN_KEY)
     setProfile(null)
   }
 
@@ -32,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider value={{
       profile,
       role: profile?.role ?? 'public',
-      loading: false,
+      loading,
       signIn,
       signOut,
     }}>

@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import type { City } from '@/lib/types'
 
-// Backend integration pending — will connect to ShieldNet AI API
+const API       = import.meta.env.VITE_API_URL ?? ''
+const TOKEN_KEY = 'shieldnet_token'
 
 type AccountType = 'agent' | 'farmer'
 type Step = 'choose-type' | 'fill-form' | 'saving' | 'success'
@@ -61,11 +62,36 @@ export function RegisterPage() {
     setLoading(true)
     setStep('saving')
 
-    // TODO: replace with ShieldNet AI registration API call
-    await new Promise(r => setTimeout(r, 1000))
+    const form = accountType === 'agent' ? agentForm : farmerForm
 
-    setLoading(false)
-    setStep('success')
+    try {
+      const res  = await fetch(`${API}/api/auth/register`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email:     form.email.trim(),
+          password:  form.password,
+          full_name: form.fullName.trim(),
+          phone:     form.phone.trim(),
+          role:      accountType === 'agent' ? 'agent' : 'farmer',
+          city:      form.city || undefined,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error ?? 'Registration failed. Please try again.')
+        setStep('fill-form')
+        setLoading(false)
+        return
+      }
+      localStorage.setItem(TOKEN_KEY, data.token)
+      setLoading(false)
+      setStep('success')
+    } catch {
+      setError('Could not connect to server. Please try again.')
+      setStep('fill-form')
+      setLoading(false)
+    }
   }
 
   return (
