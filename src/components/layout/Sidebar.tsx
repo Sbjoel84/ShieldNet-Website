@@ -1,10 +1,11 @@
-import { NavLink, Link, useLocation } from 'react-router-dom'
-import { Wheat, Building2, Bot, LayoutDashboard, ShieldCheck, ChevronLeft, ChevronRight, LogOut, Home, Globe, Phone, Info } from 'lucide-react'
+import { NavLink, Link } from 'react-router-dom'
+import { Wheat, Building2, Bot, LayoutDashboard, ShieldCheck, ChevronLeft, ChevronRight, LogOut, Home, Phone, Info } from 'lucide-react'
 import { cn, getInitials } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { ShieldLogo } from '@/components/ui/ShieldLogo'
 
 interface SidebarProps {
   collapsed: boolean
@@ -20,7 +21,6 @@ const NAV_ITEMS = [
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { profile, role, signOut } = useAuth()
-  const location = useLocation()
 
   const initials = profile?.full_name ? getInitials(profile.full_name) : 'SN'
 
@@ -33,13 +33,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
     >
       {/* Logo */}
       <div className={cn('flex items-center gap-3 px-3 py-4 border-b border-border', collapsed && 'justify-center px-2')}>
-        <div className="flex-shrink-0 rounded-xl overflow-hidden ring-1 ring-green-500/30 shadow-lg shadow-black/30">
-          <img
-            src="/logo-alt.svg"
-            alt="ShieldNet"
-            className={cn('object-contain bg-white transition-all', collapsed ? 'w-9 h-9' : 'w-10 h-10')}
-          />
-        </div>
+        <ShieldLogo sizeClass={collapsed ? 'w-9 h-9' : 'w-10 h-10'} wrapperClassName="shadow-lg shadow-black/30" />
         {!collapsed && (
           <div className="min-w-0">
             <p className="text-sm font-bold text-foreground leading-none">ShieldNet</p>

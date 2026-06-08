@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
-
-// Admin sign-in — backend integration pending (ShieldNet AI API)
+import { ShieldLogo } from '@/components/ui/ShieldLogo'
 
 export function AuthPage() {
   const { signIn } = useAuth()
@@ -33,9 +32,7 @@ export function AuthPage() {
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 mb-5 ring-2 ring-green-500/30 animate-shield-pulse">
-            <img src="/logo-alt.svg" alt="ShieldNet Core Technologies" className="w-32 h-32 object-contain bg-white" />
-          </div>
+          <ShieldLogo sizeClass="w-32 h-32" wrapperClassName="rounded-2xl shadow-2xl shadow-black/40 mb-5 ring-2 ring-green-500/30" />
           <h1 className="text-2xl font-bold text-foreground">ShieldNet Dashboard</h1>
           <p className="text-sm text-muted-foreground mt-1 text-center">
             Admin access — authorised personnel only

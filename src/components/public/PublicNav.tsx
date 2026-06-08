@@ -4,6 +4,7 @@ import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/hooks/useAuth'
+import { ShieldLogo } from '@/components/ui/ShieldLogo'
 
 const NAV_LINKS = [
   { to: '/',            label: 'Home',        end: true },
@@ -25,9 +26,7 @@ export function PublicNav() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setOpen(false)}>
-          <div className="rounded-xl overflow-hidden ring-1 ring-green-500/30 shadow">
-            <img src="/logo-alt.svg" alt="ShieldNet" className="w-9 h-9 object-contain bg-white" />
-          </div>
+          <ShieldLogo sizeClass="w-9 h-9" wrapperClassName="shadow" />
           <div className="hidden sm:block">
             <span className="text-sm font-bold leading-none block">ShieldNet</span>
             <span className="text-[10px] text-muted-foreground">Core Technologies</span>
@@ -53,15 +52,19 @@ export function PublicNav() {
 
         {/* Actions */}
         <div className="flex items-center gap-2 shrink-0">
-          {!profile && (
+          {!profile || profile.id === 'demo-admin' ? (
             <>
-              <Button variant="shield" size="sm" disabled>
-                Not Available Yet
+              <Button variant="ghost" size="sm" onClick={() => navigate('/auth')}>
+                Sign In
+              </Button>
+              <Button variant="shield" size="sm" onClick={() => navigate('/register')}>
+                Get Started
               </Button>
             </>
-          )}
+          ) : null}
           {/* Mobile toggle */}
           <button
+            type="button"
             className="md:hidden p-2 rounded-lg hover:bg-accent transition-colors"
             onClick={() => setOpen(v => !v)}
           >
@@ -87,9 +90,10 @@ export function PublicNav() {
               {label}
             </NavLink>
           ))}
-          {!profile && (
+          {(!profile || profile.id === 'demo-admin') && (
             <div className="pt-3 border-t border-border flex gap-2">
-              <Button variant="shield" className="w-full" disabled>Not Available Yet</Button>
+              <Button variant="outline" className="flex-1" onClick={() => { navigate('/auth'); setOpen(false) }}>Sign In</Button>
+              <Button variant="shield" className="flex-1" onClick={() => { navigate('/register'); setOpen(false) }}>Get Started</Button>
             </div>
           )}
         </div>

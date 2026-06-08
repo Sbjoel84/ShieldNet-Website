@@ -110,7 +110,7 @@ export function AboutPage() {
                 to: '/shieldher',
               },
               {
-                icon: Wheat,
+                logo: '/ShieldFarm.png',
                 color: 'text-green-400',
                 bg: 'bg-green-500/10',
                 border: 'border-green-500/20',
@@ -120,7 +120,7 @@ export function AboutPage() {
                 to: '/farms',
               },
               {
-                icon: Building2,
+                logo: '/ShieldHome.png',
                 color: 'text-blue-400',
                 bg: 'bg-blue-500/10',
                 border: 'border-blue-500/20',
@@ -132,10 +132,7 @@ export function AboutPage() {
             ].map(p => (
               <div key={p.title} className={`p-5 rounded-2xl border ${p.border} ${p.bg} flex flex-col gap-3`}>
                 <div className="flex items-start justify-between">
-                  {'logo' in p && p.logo
-                    ? <img src={p.logo} alt={p.title} className="w-7 h-7 rounded-lg object-cover" />
-                    : 'icon' in p && p.icon ? <p.icon className={`w-7 h-7 ${p.color}`} /> : null
-                  }
+                  {p.logo && <img src={p.logo} alt={p.title} className="w-7 h-7 rounded-lg object-cover" />}
                   <Badge className={`text-[10px] ${p.badge === 'Coming Soon' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : p.badge === 'Core Engine' ? 'bg-red-500/20 text-red-300 border-red-500/30' : 'bg-green-500/20 text-green-300 border-green-500/30'}`}>
                     {p.badge}
                   </Badge>

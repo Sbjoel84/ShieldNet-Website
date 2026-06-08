@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Bell, Sun, Moon, Menu, Globe } from 'lucide-react'
+import { Bell, Menu, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -22,11 +22,9 @@ const LANGUAGES = [
 
 interface HeaderProps {
   onMenuToggle: () => void
-  darkMode: boolean
-  onDarkModeToggle: () => void
 }
 
-export function Header({ onMenuToggle, darkMode, onDarkModeToggle }: HeaderProps) {
+export function Header({ onMenuToggle }: HeaderProps) {
   const location = useLocation()
   const [lang, setLang] = useState('en')
   const title = PAGE_TITLES[location.pathname] ?? 'ShieldNet'
@@ -60,11 +58,6 @@ export function Header({ onMenuToggle, darkMode, onDarkModeToggle }: HeaderProps
             ))}
           </SelectContent>
         </Select>
-
-        {/* Dark mode */}
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onDarkModeToggle}>
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
 
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="h-8 w-8 relative">

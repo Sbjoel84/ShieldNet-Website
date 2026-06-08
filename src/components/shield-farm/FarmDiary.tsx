@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Plus, Sun, Cloud, Droplets, BookOpen } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Plus, Sun, Cloud, Droplets, BookOpen, Loader2 } from 'lucide-react'
 import { todayISO } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -7,9 +7,9 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { SEED_DIARY, SEED_FARMS } from '@/data/seedData'
+import { apiFetch } from '@/hooks/useApi'
 import { formatDate } from '@/lib/utils'
-import type { FarmDiaryEntry } from '@/lib/types'
+import type { FarmDiaryEntry, Farm } from '@/lib/types'
 
 const ACTIVITIES = ['Planting', 'Weeding', 'Fertilizer Application', 'Irrigation', 'Pest Scouting', 'Harvesting', 'Soil Testing', 'Other']
 
@@ -21,25 +21,47 @@ function WeatherIcon({ weather }: { weather?: string }) {
   return <Cloud className="w-3.5 h-3.5 text-muted-foreground" />
 }
 
-const EMPTY_FORM = { farm_id: 'farm-001', activity: '', notes: '', weather: '' }
+interface Props { farms: Farm[] }
 
-export function FarmDiary() {
-  const [entries, setEntries] = useState<FarmDiaryEntry[]>(SEED_DIARY)
-  const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({ ...EMPTY_FORM, date: todayISO() })
+export function FarmDiary({ farms }: Props) {
+  const [entries, setEntries]   = useState<FarmDiaryEntry[]>([])
+  const [loading, setLoading]   = useState(true)
+  const [saving, setSaving]     = useState(false)
+  const [open, setOpen]         = useState(false)
+  const [form, setForm]         = useState({ farm_id: '', activity: '', notes: '', weather: '', date: todayISO() })
 
-  function addEntry() {
-    const entry: FarmDiaryEntry = {
-      id: `d-${Date.now()}`,
-      ...form,
-      created_at: new Date().toISOString(),
+  useEffect(() => {
+    apiFetch<{ entries: FarmDiaryEntry[] }>('/api/diary')
+      .then(d => setEntries(d.entries))
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    if (farms.length > 0 && !form.farm_id) {
+      setForm(f => ({ ...f, farm_id: farms[0].id }))
     }
-    setEntries(prev => [entry, ...prev])
-    setOpen(false)
-    setForm({ ...EMPTY_FORM, date: todayISO() })
+  }, [farms])
+
+  async function addEntry() {
+    if (!form.activity || !form.notes) return
+    setSaving(true)
+    try {
+      const data = await apiFetch<{ entry: FarmDiaryEntry }>('/api/diary', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      })
+      setEntries(prev => [data.entry, ...prev])
+      setOpen(false)
+      setForm(f => ({ ...f, activity: '', notes: '', weather: '', date: todayISO() }))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to save entry.')
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const farmName = (id: string) => SEED_FARMS.find(f => f.id === id)?.name ?? id
+  const farmName = (id: string) => farms.find(f => f.id === id)?.name ?? id
 
   return (
     <div className="space-y-4">
@@ -49,38 +71,43 @@ export function FarmDiary() {
           <h3 className="text-sm font-semibold">{entries.length} diary entries</h3>
         </div>
         <Button variant="shield" size="sm" onClick={() => setOpen(true)}>
-          <Plus className="w-4 h-4 mr-1" />
-          Add Entry
+          <Plus className="w-4 h-4 mr-1" />Add Entry
         </Button>
       </div>
 
-      <div className="space-y-3">
-        {entries.map(entry => (
-          <Card key={entry.id} className="hover:border-border/80 transition-colors">
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <span className="text-sm font-semibold">{entry.activity}</span>
-                    <span className="text-xs text-muted-foreground">·</span>
-                    <span className="text-xs text-muted-foreground">{farmName(entry.farm_id)}</span>
-                  </div>
-                  <p className="text-sm text-foreground/80">{entry.notes}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-xs font-medium">{formatDate(entry.date)}</p>
-                  {entry.weather && (
-                    <div className="flex items-center justify-end gap-1 mt-1">
-                      <WeatherIcon weather={entry.weather} />
-                      <span className="text-[11px] text-muted-foreground">{entry.weather}</span>
+      {loading ? (
+        <div className="flex justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+      ) : entries.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-10">No diary entries yet.</p>
+      ) : (
+        <div className="space-y-3">
+          {entries.map(entry => (
+            <Card key={entry.id} className="hover:border-border/80 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className="text-sm font-semibold">{entry.activity}</span>
+                      <span className="text-xs text-muted-foreground">·</span>
+                      <span className="text-xs text-muted-foreground">{farmName(entry.farm_id)}</span>
                     </div>
-                  )}
+                    <p className="text-sm text-foreground/80">{entry.notes}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-xs font-medium">{formatDate(entry.date)}</p>
+                    {entry.weather && (
+                      <div className="flex items-center justify-end gap-1 mt-1">
+                        <WeatherIcon weather={entry.weather} />
+                        <span className="text-[11px] text-muted-foreground">{entry.weather}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
@@ -91,13 +118,18 @@ export function FarmDiary() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Farm</Label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                  value={form.farm_id}
-                  onChange={e => setForm(f => ({ ...f, farm_id: e.target.value }))}
-                >
-                  {SEED_FARMS.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
-                </select>
+                {farms.length > 0 ? (
+                  <select
+                    aria-label="Select farm"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    value={form.farm_id}
+                    onChange={e => setForm(f => ({ ...f, farm_id: e.target.value }))}
+                  >
+                    {farms.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
+                  </select>
+                ) : (
+                  <p className="text-xs text-muted-foreground pt-2">No farms yet</p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label>Date</Label>
@@ -107,6 +139,7 @@ export function FarmDiary() {
             <div className="space-y-1.5">
               <Label>Activity</Label>
               <select
+                aria-label="Select activity"
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 value={form.activity}
                 onChange={e => setForm(f => ({ ...f, activity: e.target.value }))}
@@ -126,7 +159,9 @@ export function FarmDiary() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button variant="shield" onClick={addEntry} disabled={!form.activity || !form.notes}>Save Entry</Button>
+            <Button variant="shield" onClick={addEntry} disabled={!form.activity || !form.notes || saving}>
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Entry'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

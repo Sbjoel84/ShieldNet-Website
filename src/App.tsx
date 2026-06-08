@@ -44,9 +44,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/auth" element={profile ? <Navigate to={profile.role === 'admin' ? '/dashboard' : '/'} replace /> : <AuthPage />} />
-      <Route path="/register" element={
-        profile?.role === 'admin' ? <Navigate to="/dashboard" replace /> : <RegisterPage />
-      } />
+      <Route path="/register" element={<RegisterPage />} />
 
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
@@ -60,10 +58,7 @@ function AppRoutes() {
         <Route path="/terms" element={<TermsOfService />} />
       </Route>
 
-      <Route
-        path="/dashboard"
-        element={<AdminRoute><DashboardLayout /></AdminRoute>}
-      >
+      <Route path="/dashboard" element={<AdminRoute><DashboardLayout /></AdminRoute>}>
         <Route index element={<Overview />} />
         <Route path="farms" element={<ShieldFarm />} />
         <Route path="properties" element={<Properties />} />

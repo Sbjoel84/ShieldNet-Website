@@ -1,5 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { ShieldCheck, Building2, Wheat, ArrowRight, CheckCircle2, Users, BarChart3, Star, Cpu } from 'lucide-react'
+import { ShieldLogo } from '@/components/ui/ShieldLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import type { LucideIcon } from 'lucide-react'
@@ -38,7 +39,7 @@ const SERVICES: ServiceItem[] = [
   },
   {
     to: '/farms',
-    icon: Wheat,
+    logo: '/ShieldFarm.png',
     color: 'text-green-400',
     bg: 'bg-green-500/10',
     border: 'border-green-500/20',
@@ -48,7 +49,7 @@ const SERVICES: ServiceItem[] = [
   },
   {
     to: '/properties',
-    icon: Building2,
+    logo: '/ShieldHome.png',
     color: 'text-blue-400',
     bg: 'bg-blue-500/10',
     border: 'border-blue-500/20',
@@ -96,7 +97,7 @@ export function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-20 text-center w-full">
           <div className="flex justify-center mb-6">
-            <img src="/logo-alt.svg" alt="ShieldNet Core Technologies" className="h-64 w-auto" />
+            <ShieldLogo sizeClass="w-64 h-64" wrapperClassName="rounded-3xl shadow-2xl shadow-black/50 ring-2 ring-green-500/40" />
           </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6">
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -113,8 +114,8 @@ export function LandingPage() {
             <Button variant="shield" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/properties')}>
               Explore ShieldHome <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button variant="outline" size="lg" className="h-12 px-8 text-base" disabled>
-              Registration Not Available Yet
+            <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/register')}>
+              Create Account <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -301,8 +302,8 @@ export function LandingPage() {
             Join thousands of Nigerians who use ShieldNet to buy, sell, farm, and invest — protected by AI at every step.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button variant="shield" size="lg" className="h-12 px-8 text-base" disabled>
-              Registration Not Available Yet
+            <Button variant="shield" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/register')}>
+              Create Account <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/contact')}>
               Talk to Us

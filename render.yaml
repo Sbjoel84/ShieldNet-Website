@@ -1,4 +1,26 @@
 services:
+  # ── Backend API ────────────────────────────────────────────────────────────
+  - type: web
+    name: shieldnet-api
+    env: node
+    region: oregon
+    buildCommand: cd server && npm install
+    startCommand: cd server && node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false          # set manually in Render dashboard (secret)
+      - key: JWT_SECRET
+        sync: false          # set manually in Render dashboard (secret)
+      - key: FRONTEND_URL
+        sync: false          # set to your deployed frontend URL
+      - key: MAIL_USER
+        sync: false          # optional — Gmail for email notifications
+      - key: MAIL_PASS
+        sync: false          # optional — Gmail app password
+
+  # ── Frontend (static site) ─────────────────────────────────────────────────
   - type: web
     name: shieldnet-website
     env: static

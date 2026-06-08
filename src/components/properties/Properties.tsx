@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { LayoutGrid, Map, Plus, ShieldCheck, SlidersHorizontal, X } from 'lucide-react'
+import { LayoutGrid, Map, Plus, ShieldCheck, SlidersHorizontal, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +10,7 @@ import { PropertyForm } from './PropertyForm'
 import { PropertyMap } from './PropertyMap'
 import { PropertyDetailDialog } from './PropertyDetailDialog'
 import { FraudReportDialog } from './FraudReportDialog'
-import { SEED_PROPERTIES } from '@/data/seedData'
+import { apiFetch } from '@/hooks/useApi'
 import type { Property, City, PropertyType } from '@/lib/types'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -27,9 +27,32 @@ export function Properties() {
   const [editTarget, setEditTarget] = useState<Property | null>(null)
   const [reportTarget, setReportTarget] = useState<string | null>(null)
   const [viewTarget, setViewTarget] = useState<Property | null>(null)
-  const [properties, setProperties] = useState<Property[]>(SEED_PROPERTIES)
+  const [properties, setProperties] = useState<Property[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [photoIndex, setPhotoIndex] = useState(0)
+
+  async function loadProperties() {
+    try {
+      setError(null)
+      const params = new URLSearchParams()
+      if (city !== 'All') params.set('city', city)
+      if (type !== 'All') params.set('type', type)
+      if (verifiedOnly)   params.set('verified', 'true')
+      if (search)         params.set('search', search)
+      const data = await apiFetch<{ properties: Property[] }>(`/api/properties?${params}`)
+      setProperties(data.properties)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load properties.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    void loadProperties()
+  }, [city, type, verifiedOnly, search])
 
   useEffect(() => {
     if (!submitted) return
@@ -37,66 +60,55 @@ export function Properties() {
     return () => clearTimeout(timer)
   }, [submitted])
 
-  const filtered = properties.filter(p => {
-    if (city !== 'All' && p.city !== city) return false
-    if (type !== 'All' && p.property_type !== type) return false
-    if (verifiedOnly && !p.shield_verified) return false
-    if (search && !p.title.toLowerCase().includes(search.toLowerCase()) && !p.address.toLowerCase().includes(search.toLowerCase())) return false
-    return true
-  })
+  const filtered = properties
 
-  function handleSubmit(data: Record<string, unknown>) {
-    const newProp: Property = {
-      id: `prop-${Date.now()}`,
-      title: data.title as string,
-      description: (data.description as string) || '',
-      price: Number(data.price) || 0,
-      property_type: data.property_type as PropertyType,
-      city: data.city as City,
-      address: data.address as string,
-      lat: 9.05, lng: 7.49,
-      photos: ['https://images.unsplash.com/photo-1582407947304-fd86f28f5c47?w=800&auto=format'],
-      status: 'pending',
-      shield_verified: false,
-      fraud_report_count: 0,
-      agent_id: 'current-user',
-      agent_name: 'You',
-      bedrooms: Number(data.bedrooms) || undefined,
-      bathrooms: Number(data.bathrooms) || undefined,
-      area_sqm: Number(data.area_sqm) || undefined,
-      created_at: new Date().toISOString(),
+  async function handleSubmit(data: Record<string, unknown>) {
+    try {
+      const result = await apiFetch<{ property: Property }>('/api/properties', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+      setProperties(prev => [result.property, ...prev])
+      setFormOpen(false)
+      setSubmitted(true)
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to submit property.')
     }
-    setProperties(prev => [newProp, ...prev])
-    setFormOpen(false)
-    setSubmitted(true)
   }
 
-  function handleEdit(data: Record<string, unknown>) {
+  async function handleEdit(data: Record<string, unknown>) {
     if (!editTarget) return
-    setProperties(prev => prev.map(p =>
-      p.id === editTarget.id
-        ? { ...p,
-            title:         data.title as string,
-            description:   (data.description as string) || '',
-            price:         Number(data.price) || p.price,
-            property_type: data.property_type as PropertyType,
-            city:          data.city as City,
-            address:       data.address as string,
-            bedrooms:      Number(data.bedrooms) || undefined,
-            bathrooms:     Number(data.bathrooms) || undefined,
-            area_sqm:      Number(data.area_sqm) || undefined,
-          }
-        : p
-    ))
-    setEditTarget(null)
+    try {
+      const result = await apiFetch<{ property: Property }>(`/api/properties/${editTarget.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      })
+      setProperties(prev => prev.map(p => p.id === editTarget.id ? result.property : p))
+      setEditTarget(null)
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to update property.')
+    }
   }
 
-  function handleDelete(id: string) {
-    setProperties(prev => prev.filter(p => p.id !== id))
+  async function handleDelete(id: string) {
+    try {
+      await apiFetch(`/api/properties/${id}`, { method: 'DELETE' })
+      setProperties(prev => prev.filter(p => p.id !== id))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to delete property.')
+    }
   }
 
-  function handleMarkSold(id: string) {
-    setProperties(prev => prev.map(p => p.id === id ? { ...p, status: 'sold' } : p))
+  async function handleMarkSold(id: string) {
+    try {
+      const result = await apiFetch<{ property: Property }>(`/api/properties/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'sold' }),
+      })
+      setProperties(prev => prev.map(p => p.id === id ? result.property : p))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to update status.')
+    }
   }
 
   function openView(p: Property) {
@@ -125,6 +137,13 @@ export function Properties() {
         <div className="flex items-center gap-3 p-3 rounded-xl bg-green-500/10 border border-green-500/20 animate-fade-in">
           <ShieldCheck className="w-5 h-5 text-green-400 shrink-0" />
           <p className="text-sm text-green-300">Property submitted for admin review. You'll be notified once verified.</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+          <p className="text-sm text-destructive">{error}</p>
+          <Button variant="outline" size="sm" onClick={loadProperties}>Retry</Button>
         </div>
       )}
 
@@ -171,7 +190,9 @@ export function Properties() {
       )}
 
       {view === 'grid' && (
-        filtered.length > 0 ? (
+        loading ? (
+          <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>
+        ) : filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(p => (
               <PropertyCard

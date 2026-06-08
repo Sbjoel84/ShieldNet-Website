@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Building2, Wheat, ArrowRight, Loader2, CheckCircle2, ArrowLeft } from 'lucide-react'
+import { ShieldLogo } from '@/components/ui/ShieldLogo'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -30,6 +31,7 @@ export function RegisterPage() {
   const [accountType, setAccountType] = useState<AccountType | null>(null)
   const [loading, setLoading]         = useState(false)
   const [error, setError]             = useState('')
+  const [duplicate, setDuplicate]     = useState(false)
 
   const [agentForm, setAgentForm] = useState<AgentForm>({
     fullName: '', email: '', phone: '', city: '', agencyName: '', bio: '', password: '',
@@ -59,6 +61,7 @@ export function RegisterPage() {
 
   async function handleSubmit() {
     setError('')
+    setDuplicate(false)
     setLoading(true)
     setStep('saving')
 
@@ -79,7 +82,8 @@ export function RegisterPage() {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error ?? 'Registration failed. Please try again.')
+        if (res.status === 409) setDuplicate(true)
+        else setError(data.error ?? 'Registration failed. Please try again.')
         setStep('fill-form')
         setLoading(false)
         return
@@ -103,9 +107,7 @@ export function RegisterPage() {
 
       <div className="relative w-full max-w-lg">
         <div className="flex flex-col items-center mb-8">
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 mb-5 ring-2 ring-green-500/30">
-            <img src="/logo-alt.svg" alt="ShieldNet" className="w-20 h-20 object-contain bg-white" />
-          </div>
+          <ShieldLogo sizeClass="w-20 h-20" wrapperClassName="rounded-2xl shadow-2xl shadow-black/40 mb-5 ring-2 ring-green-500/30" />
           <h1 className="text-2xl font-bold">Create Your ShieldNet Account</h1>
           <p className="text-sm text-muted-foreground mt-1 text-center">Join thousands of Nigerians protected by AI</p>
         </div>
@@ -222,6 +224,12 @@ export function RegisterPage() {
               </div>
 
               {error && <p className="text-xs text-destructive">{error}</p>}
+              {duplicate && (
+                <p className="text-xs text-destructive">
+                  An account with this email already exists.{' '}
+                  <Link to="/auth" className="underline text-green-400">Sign in instead</Link>
+                </p>
+              )}
 
               <Button variant="shield" className="w-full" onClick={handleSubmit} disabled={!agentValid() || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}
@@ -303,6 +311,12 @@ export function RegisterPage() {
               </div>
 
               {error && <p className="text-xs text-destructive">{error}</p>}
+              {duplicate && (
+                <p className="text-xs text-destructive">
+                  An account with this email already exists.{' '}
+                  <Link to="/auth" className="underline text-green-400">Sign in instead</Link>
+                </p>
+              )}
 
               <Button variant="shield" className="w-full" onClick={handleSubmit} disabled={!farmerValid() || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ArrowRight className="w-4 h-4 mr-2" />}

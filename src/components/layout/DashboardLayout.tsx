@@ -1,17 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
-import { cn } from '@/lib/utils'
 
 export function DashboardLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(true)
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('light', !darkMode)
-  }, [darkMode])
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -32,11 +26,7 @@ export function DashboardLayout() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header
-          onMenuToggle={() => setMobileSidebarOpen(v => !v)}
-          darkMode={darkMode}
-          onDarkModeToggle={() => setDarkMode(v => !v)}
-        />
+        <Header onMenuToggle={() => setMobileSidebarOpen(v => !v)} />
         <main className="flex-1 overflow-y-auto">
           <div className="p-4 md:p-6 max-w-7xl mx-auto animate-fade-in">
             <Outlet />
