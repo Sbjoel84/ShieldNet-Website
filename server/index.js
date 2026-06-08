@@ -6,12 +6,17 @@ import jwt from 'jsonwebtoken'
 import nodemailer from 'nodemailer'
 import { neon } from '@neondatabase/serverless'
 
+const REQUIRED_VARS = ['DATABASE_URL', 'JWT_SECRET']
+const missing = REQUIRED_VARS.filter(k => !process.env[k])
+if (missing.length) {
+  console.error('\n❌  Missing required environment variables:', missing.join(', '))
+  console.error('    Set them in your Render dashboard → Environment tab.\n')
+  process.exit(1)
+}
+
 const app = express()
 const sql = neon(process.env.DATABASE_URL)
 const JWT_SECRET = process.env.JWT_SECRET
-
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required')
-if (!JWT_SECRET)               throw new Error('JWT_SECRET is required')
 
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }))
 app.use(express.json())
