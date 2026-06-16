@@ -17,12 +17,20 @@ export function PublicFooter() {
                 <p className="text-[10px] text-muted-foreground mt-0.5">Core Technologies</p>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              Nigeria's trusted AI-powered platform for real estate, agriculture, and security intelligence.
+            <p className="text-sm text-muted-foreground leading-relaxed mb-1">
+              ShieldNet builds the technology behind trusted businesses.
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-4">
+              From idea to infrastructure — we design, develop, and deploy systems that work.
             </p>
             <div className="flex gap-3">
-              {[Facebook, Twitter, Linkedin, Instagram].map((Icon, i) => (
-                <a key={i} href="#" className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-green-400 hover:bg-green-500/10 transition-colors">
+              {[
+                { Icon: Facebook,  label: 'Facebook'  },
+                { Icon: Twitter,   label: 'Twitter'   },
+                { Icon: Linkedin,  label: 'LinkedIn'  },
+                { Icon: Instagram, label: 'Instagram' },
+              ].map(({ Icon, label }) => (
+                <a key={label} href="#" title={label} aria-label={label} className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-green-400 hover:bg-green-500/10 transition-colors">
                   <Icon className="w-4 h-4" />
                 </a>
               ))}
@@ -34,11 +42,13 @@ export function PublicFooter() {
             <h4 className="text-sm font-semibold mb-4">Services</h4>
             <ul className="space-y-2.5">
               {[
-                { to: '/ai-tools',   label: 'ShieldNet AI' },
-                { to: '/farms',      label: 'ShieldFarm' },
-                { to: '/properties', label: 'ShieldNet Properties' },
+                { to: '/#what-we-do', label: 'Software Development' },
+                { to: '/#what-we-do', label: 'Web & App Development' },
+                { to: '/#what-we-do', label: 'AI Solutions' },
+                { to: '/#what-we-do', label: 'Database Systems' },
+                { to: '/#products',   label: 'ShieldNet Products' },
               ].map(({ to, label }) => (
-                <li key={to}>
+                <li key={label}>
                   <Link to={to} className="text-sm text-muted-foreground hover:text-green-400 transition-colors">{label}</Link>
                 </li>
               ))}
@@ -83,11 +93,14 @@ export function PublicFooter() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} ShieldNet Core Technologies Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Shield className="w-3.5 h-3.5 text-green-400" />
-            Secured by ShieldNet AI
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <span>Built by ShieldNet. Powered by AI.</span>
+            <span className="flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5 text-green-400" />
+              Secured by ShieldNet AI
+            </span>
           </div>
         </div>
       </div>

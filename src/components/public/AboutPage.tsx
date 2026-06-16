@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, Target, Eye, Heart, Users, Wheat, Building2, Bot, Cpu, ArrowRight } from 'lucide-react'
+import { ShieldCheck, Target, Eye, Heart, Users, Wheat, Building2, Bot, Cpu, ArrowRight, Globe2, Database, Code2, Palette } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -46,9 +46,15 @@ export function AboutPage() {
             <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
           </div>
           <h1 className="text-4xl font-bold mb-4">About ShieldNet</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
-            ShieldNet Core Technologies (Abuja) is building a unified AI platform under the "Shield" brand — delivering real-time protection across multiple high-impact sectors.
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed mb-4">
+            ShieldNet Core Technologies (Abuja) is building a unified AI platform under the "Shield" brand — delivering real-time protection across multiple high-impact sectors while also providing modern digital solutions for businesses and individuals.
           </p>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed mb-6">
+            We don't just build AI systems — we build complete digital infrastructure: websites that scale, databases that perform, software that solves real problems, and branding that communicates trust.
+          </p>
+          <div className="inline-block text-sm text-muted-foreground/70 font-medium tracking-wide">
+            Professional Web Development &nbsp;|&nbsp; Database Systems &nbsp;|&nbsp; Software Solutions &nbsp;|&nbsp; Graphics Design
+          </div>
         </div>
       </div>
 
@@ -144,6 +150,31 @@ export function AboutPage() {
                     Explore <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 )}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* What We Build */}
+        <section>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">Complete Digital Infrastructure</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              We don't just build AI systems — we build everything a modern business needs to operate, grow, and compete.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+            {[
+              { icon: Globe2,    color: 'text-blue-400',   bg: 'bg-blue-500/10',   border: 'border-blue-500/20',   title: 'Web Development',        desc: 'Modern, responsive, business-ready websites built to scale.' },
+              { icon: Database,  color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/20',  title: 'Database Systems',       desc: 'Secure, scalable data architecture and management.' },
+              { icon: Code2,     color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20', title: 'Custom Software',        desc: 'Tailored applications for business operations and automation.' },
+              { icon: Palette,   color: 'text-pink-400',   bg: 'bg-pink-500/10',   border: 'border-pink-500/20',   title: 'Graphics & Brand Design',desc: 'Visual identity systems that build trust and communicate value.' },
+              { icon: Bot,       color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20', title: 'AI-Powered Platforms',   desc: 'Intelligent systems for real-time decision making and protection.' },
+            ].map(s => (
+              <div key={s.title} className={`p-5 rounded-2xl border ${s.border} ${s.bg} flex flex-col gap-3`}>
+                <s.icon className={`w-7 h-7 ${s.color}`} />
+                <h3 className="font-semibold text-sm">{s.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>

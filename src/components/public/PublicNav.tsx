@@ -9,10 +9,9 @@ import { ShieldLogo } from '@/components/ui/ShieldLogo'
 const NAV_LINKS = [
   { to: '/',            label: 'Home',        end: true },
   { to: '/about',       label: 'About'                  },
+  { to: '/#what-we-do', label: 'What We Do'             },
   { to: '/ai-tools',    label: 'ShieldNet AI'           },
-  { to: '/properties',  label: 'ShieldHome'             },
-  { to: '/farms',       label: 'ShieldFarm'             },
-  { to: '/shieldher',   label: 'ShieldHer'              },
+  { to: '/#products',   label: 'Products'               },
   { to: '/contact',     label: 'Contact'                },
 ]
 
