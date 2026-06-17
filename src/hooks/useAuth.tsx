@@ -49,14 +49,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      // Wake the server first (handles Render free-tier cold starts)
+      try { await fetch(`${API}/health`) } catch { /* ignore */ }
       return await attempt()
     } catch {
-      // Retry once after 6s — handles Render free-tier cold starts
+      // Server still waking — wait 20s and retry once
       try {
-        await new Promise(r => setTimeout(r, 6000))
+        await new Promise(r => setTimeout(r, 20000))
         return await attempt()
       } catch {
-        return { error: 'Could not connect to server. Please try again.' }
+        return { error: 'Server is starting up. Please wait 30 seconds and try again.' }
       }
     }
   }
