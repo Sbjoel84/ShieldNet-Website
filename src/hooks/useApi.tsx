@@ -1,12 +1,17 @@
-const API       = import.meta.env.VITE_API_URL ?? ''
-const TOKEN_KEY = 'shieldnet_token'
+import { auth } from '@/lib/firebase'
 
-export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY)
+const API = import.meta.env.VITE_API_URL ?? ''
+
+async function getToken(): Promise<string | null> {
+  try {
+    return (await auth.currentUser?.getIdToken()) ?? null
+  } catch {
+    return null
+  }
 }
 
 export async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getToken()
+  const token = await getToken()
   const res = await fetch(`${API}${path}`, {
     ...options,
     headers: {

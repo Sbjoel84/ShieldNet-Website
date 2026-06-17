@@ -32,15 +32,44 @@ app.use(cors({
 }))
 app.use(express.json())
 
-function requireAuth(req, res, next) {
+const ADMIN_EMAIL        = 'shieldnetcore@gmail.com'
+const FIREBASE_WEB_KEY   = process.env.FIREBASE_WEB_API_KEY ?? ''
+
+async function requireAuth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1]
   if (!token) return res.status(401).json({ error: 'Unauthorized' })
+
+  // 1. Try legacy custom JWT
   try {
     req.user = jwt.verify(token, JWT_SECRET)
-    next()
-  } catch {
-    res.status(401).json({ error: 'Invalid or expired token' })
-  }
+    return next()
+  } catch {}
+
+  // 2. Verify as Firebase ID token
+  try {
+    const r = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${FIREBASE_WEB_KEY}`,
+      {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ idToken: token }),
+      }
+    )
+    if (r.ok) {
+      const d = await r.json()
+      const u = d.users?.[0]
+      if (u) {
+        req.user = {
+          id:    u.localId,
+          email: u.email,
+          role:  u.email?.toLowerCase() === ADMIN_EMAIL ? 'admin' : 'public',
+        }
+        return next()
+      }
+    }
+  } catch {}
+
+  res.status(401).json({ error: 'Unauthorized' })
 }
 
 // ── POST /api/auth/login ──────────────────────────────────────────────────────

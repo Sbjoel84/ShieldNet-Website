@@ -1,8 +1,40 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import {
+  signInWithEmailAndPassword,
+  signOut as fbSignOut,
+  onAuthStateChanged,
+  type User,
+} from 'firebase/auth'
+import { auth } from '@/lib/firebase'
 import type { Profile, UserRole } from '@/lib/types'
 
-const API       = import.meta.env.VITE_API_URL ?? ''
-const TOKEN_KEY = 'shieldnet_token'
+const ADMIN_EMAIL = 'shieldnetcore@gmail.com'
+
+function buildProfile(user: User): Profile {
+  return {
+    id:           user.uid,
+    email:        user.email ?? '',
+    full_name:    user.displayName ?? 'ShieldNet Admin',
+    role:         (user.email?.toLowerCase() === ADMIN_EMAIL ? 'admin' : 'public') as UserRole,
+    shield_score: 100,
+    verified:     true,
+    created_at:   user.metadata.creationTime ?? new Date().toISOString(),
+  }
+}
+
+function getFirebaseError(err: any): string {
+  const code: string = err?.code ?? ''
+  if (
+    code.includes('user-not-found') ||
+    code.includes('wrong-password') ||
+    code.includes('invalid-credential') ||
+    code.includes('invalid-email')
+  ) return 'Invalid email or password.'
+  if (code.includes('too-many-requests')) return 'Too many attempts. Please try again later.'
+  if (code.includes('user-disabled'))     return 'This account has been disabled.'
+  if (code.includes('network-request-failed')) return 'Network error. Check your connection.'
+  return 'Sign in failed. Please try again.'
+}
 
 interface AuthState {
   profile: Profile | null
@@ -22,56 +54,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem(TOKEN_KEY)
-    if (!token) { setLoading(false); return }
-
-    fetch(`${API}/api/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+    const unsub = onAuthStateChanged(auth, user => {
+      setProfile(user ? buildProfile(user) : null)
+      setLoading(false)
     })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => setProfile(data?.profile ?? null))
-      .catch(() => setProfile(null))
-      .finally(() => setLoading(false))
+    return unsub
   }, [])
 
   async function signIn(email: string, password: string) {
-    const attempt = async () => {
-      const res = await fetch(`${API}/api/auth/login`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (!res.ok) return { error: data.error ?? 'Sign in failed.' }
-      localStorage.setItem(TOKEN_KEY, data.token)
-      setProfile(data.profile)
-      return { error: null }
-    }
-
     try {
-      // Wake the server first (handles Render free-tier cold starts)
-      try { await fetch(`${API}/health`) } catch { /* ignore */ }
-      return await attempt()
-    } catch {
-      // Server still waking — wait 20s and retry once
-      try {
-        await new Promise(r => setTimeout(r, 20000))
-        return await attempt()
-      } catch {
-        return { error: 'Server is starting up. Please wait 30 seconds and try again.' }
-      }
+      const cred = await signInWithEmailAndPassword(auth, email, password)
+      setProfile(buildProfile(cred.user))
+      return { error: null }
+    } catch (err: any) {
+      return { error: getFirebaseError(err) }
     }
   }
 
   async function signOut() {
-    localStorage.removeItem(TOKEN_KEY)
+    await fbSignOut(auth)
+    localStorage.removeItem('shieldnet_token')
     setProfile(null)
   }
 
   return (
     <AuthContext.Provider value={{
       profile,
-      role: profile?.role ?? 'public',
+      role:    profile?.role ?? 'public',
       loading,
       signIn,
       signOut,
