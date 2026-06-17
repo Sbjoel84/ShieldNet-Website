@@ -35,20 +35,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function signIn(email: string, password: string) {
-    try {
-      const res  = await fetch(`${API}/api/auth/login`, {
+    const attempt = async () => {
+      const res = await fetch(`${API}/api/auth/login`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ email, password }),
       })
       const data = await res.json()
       if (!res.ok) return { error: data.error ?? 'Sign in failed.' }
-
       localStorage.setItem(TOKEN_KEY, data.token)
       setProfile(data.profile)
       return { error: null }
+    }
+
+    try {
+      return await attempt()
     } catch {
-      return { error: 'Could not connect to server. Please try again.' }
+      // Retry once after 6s — handles Render free-tier cold starts
+      try {
+        await new Promise(r => setTimeout(r, 6000))
+        return await attempt()
+      } catch {
+        return { error: 'Could not connect to server. Please try again.' }
+      }
     }
   }
 

@@ -18,7 +18,18 @@ const app = express()
 const sql = neon(process.env.DATABASE_URL)
 const JWT_SECRET = process.env.JWT_SECRET
 
-app.use(cors({ origin: process.env.FRONTEND_URL || '*' }))
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:4173',
+].filter(Boolean)
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true)
+    cb(null, false)
+  },
+}))
 app.use(express.json())
 
 function requireAuth(req, res, next) {
