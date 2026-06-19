@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuth() && request.auth.token.email == 'shieldnetcore@gmail.com';
+    }
+
+    // Properties: anyone can read, authenticated users can create, admin manages
+    match /properties/{id} {
+      allow read: if true;
+      allow create: if isAuth();
+      allow update, delete: if isAdmin();
+    }
+
+    // Market prices: public read, admin write
+    match /market_prices/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Farms: public read, auth write
+    match /farms/{id} {
+      allow read: if true;
+      allow write: if isAuth();
+    }
+
+    // Diagnoses: auth read/write
+    match /crop_diagnoses/{id} {
+      allow read, write: if isAuth();
+    }
+
+    // Diary: auth read/write
+    match /farm_diary_entries/{id} {
+      allow read, write: if isAuth();
+    }
+
+    // Admin queue: admin manages, any authenticated user may create (e.g. agent registration)
+    match /admin_queue_items/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isAuth();
+    }
+
+    // Applications: anyone can create (public forms), admin reads and updates
+    match /applications/{id} {
+      allow create: if true;
+      allow read, update: if isAdmin();
+    }
+
+    // Profiles: auth can read own, anyone can create own, admin can write all
+    match /profiles/{id} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.auth.uid == id;
+      allow update, delete: if isAdmin();
+    }
+  }
+}

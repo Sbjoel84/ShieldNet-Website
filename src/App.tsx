@@ -4,6 +4,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { PublicLayout } from '@/components/public/PublicLayout'
 import { AuthPage } from '@/components/auth/AuthPage'
 import { RegisterPage } from '@/components/auth/RegisterPage'
+import { AgentRegisterPage } from '@/components/auth/AgentRegisterPage'
 import { Overview } from '@/components/dashboard/Overview'
 import { ShieldFarm } from '@/components/shield-farm/ShieldFarm'
 import { Properties } from '@/components/properties/Properties'
@@ -30,11 +31,12 @@ function LoadingScreen() {
   )
 }
 
-function AdminRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { profile, loading } = useAuth()
   if (loading) return <LoadingScreen />
   if (!profile) return <Navigate to="/auth" replace />
-  if (profile.role !== 'admin') return <Navigate to="/" replace />
+  // Wrong role — send to /auth so user can sign in with the correct account
+  if (profile.role !== 'admin' && profile.role !== 'agent') return <Navigate to="/auth" replace />
   return <>{children}</>
 }
 
@@ -43,8 +45,9 @@ function AppRoutes() {
   if (loading) return <LoadingScreen />
   return (
     <Routes>
-      <Route path="/auth" element={profile ? <Navigate to={profile.role === 'admin' ? '/dashboard' : '/'} replace /> : <AuthPage />} />
+      <Route path="/auth" element={(profile?.role === 'admin' || profile?.role === 'agent') ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/agent-register" element={<AgentRegisterPage />} />
 
       <Route element={<PublicLayout />}>
         <Route path="/" element={<LandingPage />} />
@@ -58,7 +61,7 @@ function AppRoutes() {
         <Route path="/terms" element={<TermsOfService />} />
       </Route>
 
-      <Route path="/dashboard" element={<AdminRoute><DashboardLayout /></AdminRoute>}>
+      <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<Overview />} />
         <Route path="farms" element={<ShieldFarm />} />
         <Route path="properties" element={<Properties />} />
@@ -66,6 +69,7 @@ function AppRoutes() {
         <Route path="admin" element={<AdminQueue />} />
       </Route>
 
+      <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

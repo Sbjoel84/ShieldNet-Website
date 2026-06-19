@@ -36,8 +36,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <ShieldLogo sizeClass={collapsed ? 'w-9 h-9' : 'w-10 h-10'} wrapperClassName="shadow-lg shadow-black/30" />
         {!collapsed && (
           <div className="min-w-0">
-            <p className="text-sm font-bold text-foreground leading-none">ShieldNet</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">Core Technologies</p>
+            <p className="text-sm font-bold text-foreground leading-none">ShieldNetCore</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">Technologies</p>
           </div>
         )}
       </div>

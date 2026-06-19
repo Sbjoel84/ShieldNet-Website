@@ -47,7 +47,7 @@ export function AboutPage() {
           </div>
           <h1 className="text-4xl font-bold mb-4">About ShieldNet</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed mb-4">
-            ShieldNet Core Technologies (Abuja) is building a unified AI platform under the "Shield" brand — delivering real-time protection across multiple high-impact sectors while also providing modern digital solutions for businesses and individuals.
+            ShieldNetCore Technologies (Abuja) is building a unified AI platform under the "Shield" brand — delivering real-time protection across multiple high-impact sectors while also providing modern digital solutions for businesses and individuals.
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed mb-6">
             We don't just build AI systems — we build complete digital infrastructure: websites that scale, databases that perform, software that solves real problems, and branding that communicates trust.

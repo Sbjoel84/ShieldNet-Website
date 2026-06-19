@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { CropDiagnosis } from './CropDiagnosis'
 import { MarketPrices } from './MarketPrices'
 import { FarmDiary } from './FarmDiary'
-import { apiFetch } from '@/hooks/useApi'
+import { getFarms } from '@/lib/db'
 import type { Farm } from '@/lib/types'
 
 export function ShieldFarm() {
@@ -13,8 +13,8 @@ export function ShieldFarm() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    apiFetch<{ farms: Farm[] }>('/api/farms')
-      .then(d => setFarms(d.farms))
+    getFarms()
+      .then(farms => setFarms(farms))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])

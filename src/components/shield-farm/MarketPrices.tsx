@@ -3,7 +3,7 @@ import { TrendingUp, TrendingDown, Minus, RefreshCw, Loader2 } from 'lucide-reac
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { apiFetch } from '@/hooks/useApi'
+import { getMarketPrices } from '@/lib/db'
 import type { MarketPrice, City } from '@/lib/types'
 
 function TrendIcon({ trend, change }: { trend: 'up' | 'down' | 'stable'; change: number }) {
@@ -21,8 +21,8 @@ export function MarketPrices() {
   const load = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await apiFetch<{ prices: MarketPrice[] }>('/api/market-prices')
-      setAllPrices(data.prices)
+      const prices = await getMarketPrices()
+      setAllPrices(prices)
       setLastUpdated(new Date().toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }))
     } catch {
       // keep existing data on refresh failure

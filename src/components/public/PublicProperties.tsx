@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { apiFetch } from '@/hooks/useApi'
+import { getProperties, addApplication } from '@/lib/db'
 import { formatNaira, formatDate } from '@/lib/utils'
 import type { Property, City, PropertyType } from '@/lib/types'
 
@@ -103,19 +103,17 @@ function InquiryForm({ property, onClose }: { property: Property; onClose: () =>
     setSending(true)
     setError(null)
     try {
-      await apiFetch('/api/applications', {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'property_inquiry',
-          full_name: form.full_name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message || 'Property inquiry',
-          property_id: property.id,
-          property_title: property.title,
-          interest_type: form.interest_type,
-          budget: form.budget ? Number(form.budget) : undefined,
-        }),
+      await addApplication({
+        type: 'property_inquiry',
+        full_name: form.full_name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message || 'Property inquiry',
+        property_id: property.id,
+        property_title: property.title,
+        interest_type: form.interest_type,
+        budget: form.budget ? Number(form.budget) : undefined,
+        priority: 'high',
       })
       setDone(true)
     } catch (e) {
@@ -187,8 +185,8 @@ export function PublicProperties() {
   const [inquiring, setInquiring] = useState<Property | null>(null)
 
   useEffect(() => {
-    apiFetch<{ properties: Property[] }>('/api/properties')
-      .then(d => setProperties(d.properties.filter(p => p.status === 'approved')))
+    getProperties()
+      .then(list => setProperties(list.filter(p => p.status === 'approved')))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])

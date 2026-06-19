@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Loader2, ArrowRight, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,6 +9,7 @@ import { ShieldLogo } from '@/components/ui/ShieldLogo'
 
 export function AuthPage() {
   const { signIn } = useAuth()
+  const navigate   = useNavigate()
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading]   = useState(false)
@@ -19,7 +21,8 @@ export function AuthPage() {
     setLoading(true)
     const { error } = await signIn(email, password)
     setLoading(false)
-    if (error) setError(error)
+    if (error) { setError(error); return }
+    navigate('/dashboard', { replace: true })
   }
 
   return (

@@ -20,7 +20,7 @@ export function PrivacyPolicy() {
 
         <section>
           <p className="text-base leading-relaxed">
-            ShieldNet Core Technologies Ltd ("ShieldNet", "we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform — including ShieldNet AI, ShieldFarm, and ShieldNet Properties — accessible via our website and mobile applications.
+            ShieldNetCore Technologies Ltd ("ShieldNet", "we", "us", or "our") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform — including ShieldNet AI, ShieldFarm, and ShieldNet Properties — accessible via our website and mobile applications.
           </p>
           <p className="text-base leading-relaxed mt-3">
             By using our services, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not use our platform.
@@ -153,7 +153,7 @@ export function PrivacyPolicy() {
         <Section title="12. Contact Us">
           <p>For privacy-related questions, requests, or complaints:</p>
           <ul>
-            <li><strong>Data Protection Officer:</strong> ShieldNet Core Technologies Ltd</li>
+            <li><strong>Data Protection Officer:</strong> ShieldNetCore Technologies Ltd</li>
             <li><strong>Email:</strong> <a href="mailto:privacy@shieldnet.ng" className="text-green-400 hover:underline">privacy@shieldnet.ng</a></li>
             <li><strong>Address:</strong> Abuja, Federal Capital Territory, Nigeria</li>
             <li><strong>Regulator:</strong> You may also lodge a complaint with the Nigeria Data Protection Commission (NDPC) at <a href="https://ndpc.gov.ng" className="text-green-400 hover:underline" target="_blank" rel="noopener noreferrer">ndpc.gov.ng</a></li>

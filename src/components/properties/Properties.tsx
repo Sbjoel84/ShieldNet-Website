@@ -10,14 +10,14 @@ import { PropertyForm } from './PropertyForm'
 import { PropertyMap } from './PropertyMap'
 import { PropertyDetailDialog } from './PropertyDetailDialog'
 import { FraudReportDialog } from './FraudReportDialog'
-import { apiFetch } from '@/hooks/useApi'
+import { getProperties, addProperty, updateProperty, deleteProperty } from '@/lib/db'
 import type { Property, City, PropertyType } from '@/lib/types'
 import { useAuth } from '@/hooks/useAuth'
 
 type ViewMode = 'grid' | 'map'
 
 export function Properties() {
-  const { role } = useAuth()
+  const { role, profile } = useAuth()
   const [view, setView] = useState<ViewMode>('grid')
   const [city, setCity] = useState<City | 'All'>('All')
   const [type, setType] = useState<PropertyType | 'All'>('All')
@@ -36,13 +36,9 @@ export function Properties() {
   async function loadProperties() {
     try {
       setError(null)
-      const params = new URLSearchParams()
-      if (city !== 'All') params.set('city', city)
-      if (type !== 'All') params.set('type', type)
-      if (verifiedOnly)   params.set('verified', 'true')
-      if (search)         params.set('search', search)
-      const data = await apiFetch<{ properties: Property[] }>(`/api/properties?${params}`)
-      setProperties(data.properties)
+      const all = await getProperties()
+      // Agents see only their own listings; admins see all
+      setProperties(role === 'agent' && profile ? all.filter(p => p.agent_id === profile.id) : all)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load properties.')
     } finally {
@@ -52,7 +48,7 @@ export function Properties() {
 
   useEffect(() => {
     void loadProperties()
-  }, [city, type, verifiedOnly, search])
+  }, [])
 
   useEffect(() => {
     if (!submitted) return
@@ -60,15 +56,23 @@ export function Properties() {
     return () => clearTimeout(timer)
   }, [submitted])
 
-  const filtered = properties
+  const filtered = properties.filter(p => {
+    if (city !== 'All' && p.city !== city) return false
+    if (type !== 'All' && p.property_type !== type) return false
+    if (verifiedOnly && !p.shield_verified) return false
+    if (search && !p.title.toLowerCase().includes(search.toLowerCase()) &&
+        !p.address.toLowerCase().includes(search.toLowerCase())) return false
+    return true
+  })
 
   async function handleSubmit(data: Record<string, unknown>) {
     try {
-      const result = await apiFetch<{ property: Property }>('/api/properties', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
-      setProperties(prev => [result.property, ...prev])
+      const prop = await addProperty({
+        ...data,
+        agent_id:   profile?.id ?? '',
+        agent_name: profile?.full_name ?? 'Agent',
+      } as Parameters<typeof addProperty>[0])
+      setProperties(prev => [prop, ...prev])
       setFormOpen(false)
       setSubmitted(true)
     } catch (e) {
@@ -79,11 +83,8 @@ export function Properties() {
   async function handleEdit(data: Record<string, unknown>) {
     if (!editTarget) return
     try {
-      const result = await apiFetch<{ property: Property }>(`/api/properties/${editTarget.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      })
-      setProperties(prev => prev.map(p => p.id === editTarget.id ? result.property : p))
+      const prop = await updateProperty(editTarget.id, data as Partial<Property>)
+      setProperties(prev => prev.map(p => p.id === editTarget.id ? prop : p))
       setEditTarget(null)
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Failed to update property.')
@@ -92,7 +93,7 @@ export function Properties() {
 
   async function handleDelete(id: string) {
     try {
-      await apiFetch(`/api/properties/${id}`, { method: 'DELETE' })
+      await deleteProperty(id)
       setProperties(prev => prev.filter(p => p.id !== id))
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Failed to delete property.')
@@ -101,11 +102,8 @@ export function Properties() {
 
   async function handleMarkSold(id: string) {
     try {
-      const result = await apiFetch<{ property: Property }>(`/api/properties/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status: 'sold' }),
-      })
-      setProperties(prev => prev.map(p => p.id === id ? result.property : p))
+      const prop = await updateProperty(id, { status: 'sold' })
+      setProperties(prev => prev.map(p => p.id === id ? prop : p))
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Failed to update status.')
     }

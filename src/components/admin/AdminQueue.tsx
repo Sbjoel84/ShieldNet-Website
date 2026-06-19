@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { ShieldCheck, AlertTriangle, Building2, Leaf, Check, X, Clock, Mail, Phone, MessageSquare, ChevronDown, ChevronUp, KeyRound, Search, Loader2 } from 'lucide-react'
+import { ShieldCheck, AlertTriangle, Building2, Leaf, Check, X, Clock, Mail, Phone, MessageSquare, ChevronDown, ChevronUp, KeyRound, Search, Loader2, UserCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
-import { apiFetch } from '@/hooks/useApi'
+import { getAdminQueue, getApplications, updateQueueItem, updateApplication as saveApplication, approveAgent, rejectAgent, getAgents } from '@/lib/db'
 import { formatDate, formatNaira } from '@/lib/utils'
-import type { AdminQueueItem, Application, ApplicationStatus } from '@/lib/types'
+import type { AdminQueueItem, Application, ApplicationStatus, Profile } from '@/lib/types'
 
 const API       = import.meta.env.VITE_API_URL ?? ''
 const TOKEN_KEY = 'shieldnet_token'
@@ -124,6 +124,7 @@ const TYPE_MAP: Record<AdminQueueItem['type'], { label: string; icon: React.Reac
   property_approval: { label: 'Property Approval', icon: <Building2 className="w-4 h-4 text-blue-400" /> },
   ai_scan_review:    { label: 'AI Scan Review',    icon: <Leaf className="w-4 h-4 text-green-400" /> },
   fraud_report:      { label: 'Fraud Report',      icon: <AlertTriangle className="w-4 h-4 text-orange-400" /> },
+  agent_approval:    { label: 'Agent Registration', icon: <UserCheck className="w-4 h-4 text-purple-400" /> },
 }
 
 const APP_TYPE_MAP: Record<Application['type'], { label: string; color: string }> = {
@@ -306,28 +307,91 @@ function ApplicationCard({ app, onUpdate }: ApplicationCardProps) {
   )
 }
 
+function AgentCard({ agent, onApprove, onReject }: {
+  agent: Profile
+  onApprove: (id: string) => void
+  onReject:  (id: string) => void
+}) {
+  return (
+    <Card className="hover:border-border/80 transition-colors">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4 flex-wrap">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+            <UserCheck className="w-4 h-4 text-purple-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-0.5">
+              <p className="text-sm font-semibold">{agent.full_name}</p>
+              <Badge variant={agent.verified ? 'verified' : 'pending'} className="text-[10px]">
+                {agent.verified ? 'Approved' : 'Pending'}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground">{agent.email}</p>
+            <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+              {agent.phone && <p className="text-[11px] text-muted-foreground">{agent.phone}</p>}
+              {agent.city  && <p className="text-[11px] text-muted-foreground">{agent.city}</p>}
+              {(agent as any).agency_name && <p className="text-[11px] text-muted-foreground">{(agent as any).agency_name}</p>}
+            </div>
+            <p className="text-[11px] text-muted-foreground/60 mt-0.5 flex items-center gap-1">
+              <Clock className="w-3 h-3" />Registered {formatDate(agent.created_at)}
+            </p>
+          </div>
+          <div className="flex gap-2 items-center ml-auto shrink-0">
+            {!agent.verified && (
+              <>
+                <Button
+                  variant="outline" size="sm"
+                  className="h-8 text-xs text-destructive border-destructive/40 hover:bg-destructive/10"
+                  onClick={() => onReject(agent.id)}
+                >
+                  <X className="w-3.5 h-3.5 mr-1" />Reject
+                </Button>
+                <Button variant="shield" size="sm" className="h-8 text-xs" onClick={() => onApprove(agent.id)}>
+                  <Check className="w-3.5 h-3.5 mr-1" />Approve
+                </Button>
+              </>
+            )}
+            {agent.verified && (
+              <Button
+                variant="outline" size="sm"
+                className="h-8 text-xs text-destructive border-destructive/40 hover:bg-destructive/10"
+                onClick={() => onReject(agent.id)}
+              >
+                <X className="w-3.5 h-3.5 mr-1" />Revoke
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export function AdminQueue() {
   const [items, setItems]               = useState<AdminQueueItem[]>([])
   const [applications, setApplications] = useState<Application[]>([])
+  const [agents, setAgents]             = useState<Profile[]>([])
   const [loading, setLoading]           = useState(true)
 
   useEffect(() => {
     Promise.all([
-      apiFetch<{ items: AdminQueueItem[] }>('/api/admin/queue'),
-      apiFetch<{ applications: Application[] }>('/api/applications'),
+      getAdminQueue(),
+      getApplications(),
+      getAgents(),
     ])
-      .then(([q, a]) => { setItems(q.items); setApplications(a.applications) })
+      .then(([items, apps, agts]) => { setItems(items); setApplications(apps); setAgents(agts) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
   async function updateStatus(id: string, status: QueueStatus) {
     try {
-      const data = await apiFetch<{ item: AdminQueueItem }>(`/api/admin/queue/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status }),
-      })
-      setItems(prev => prev.map(item => item.id === id ? data.item : item))
+      const item = await updateQueueItem(id, status)
+      // When approving an agent, mark their profile as verified
+      if (status === 'approved' && item.type === 'agent_approval') {
+        await approveAgent(item.ref_id)
+      }
+      setItems(prev => prev.map(i => i.id === id ? item : i))
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Failed to update.')
     }
@@ -335,18 +399,34 @@ export function AdminQueue() {
 
   async function updateApplication(id: string, status: ApplicationStatus, notes?: string) {
     try {
-      const data = await apiFetch<{ application: Application }>(`/api/applications/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status, admin_notes: notes }),
-      })
-      setApplications(prev => prev.map(a => a.id === id ? data.application : a))
+      const app = await saveApplication(id, { status, admin_notes: notes })
+      setApplications(prev => prev.map(a => a.id === id ? app : a))
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Failed to update.')
     }
   }
 
+  async function handleApproveAgent(id: string) {
+    try {
+      await approveAgent(id)
+      setAgents(prev => prev.map(a => a.id === id ? { ...a, verified: true } : a))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to approve agent.')
+    }
+  }
+
+  async function handleRejectAgent(id: string) {
+    try {
+      await rejectAgent(id)
+      setAgents(prev => prev.map(a => a.id === id ? { ...a, verified: false } : a))
+    } catch (e) {
+      alert(e instanceof Error ? e.message : 'Failed to reject agent.')
+    }
+  }
+
   const pending  = items.filter(i => i.status === 'pending')
   const resolved = items.filter(i => i.status !== 'pending')
+  const pendingAgents = agents.filter(a => !a.verified)
   const newApps  = applications.filter(a => a.status === 'new' || a.status === 'contacted' || a.status === 'processing')
   const doneApps = applications.filter(a => a.status === 'completed' || a.status === 'rejected')
 
@@ -387,6 +467,10 @@ export function AdminQueue() {
                 {newApps.length > 0 && <Badge variant="pending" className="ml-2 text-[10px] px-1.5">{newApps.length}</Badge>}
               </TabsTrigger>
               <TabsTrigger value="done-apps" className="text-xs">Done ({doneApps.length})</TabsTrigger>
+              <TabsTrigger value="agents" className="text-xs">
+                <UserCheck className="w-3 h-3 mr-1" />Agents
+                {pendingAgents.length > 0 && <Badge variant="pending" className="ml-2 text-[10px] px-1.5">{pendingAgents.length}</Badge>}
+              </TabsTrigger>
               <TabsTrigger value="reset-password" className="text-xs">
                 <KeyRound className="w-3 h-3 mr-1" />Reset Password
               </TabsTrigger>
@@ -433,6 +517,34 @@ export function AdminQueue() {
                   ? <p className="text-sm text-muted-foreground py-6 text-center">No completed applications yet.</p>
                   : doneApps.map(app => <ApplicationCard key={app.id} app={app} onUpdate={updateApplication} />)
                 }
+              </div>
+            </TabsContent>
+
+            <TabsContent value="agents">
+              <div className="space-y-3 mt-4">
+                {agents.length === 0 ? (
+                  <div className="flex flex-col items-center gap-3 py-12 text-center">
+                    <UserCheck className="w-10 h-10 text-purple-400/40" />
+                    <p className="text-muted-foreground text-sm">No agents registered yet.</p>
+                  </div>
+                ) : (
+                  <>
+                    {pendingAgents.length > 0 && (
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Awaiting Approval</p>
+                    )}
+                    {pendingAgents.map(a => (
+                      <AgentCard key={a.id} agent={a} onApprove={handleApproveAgent} onReject={handleRejectAgent} />
+                    ))}
+                    {agents.filter(a => a.verified).length > 0 && (
+                      <>
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-2">Approved Agents</p>
+                        {agents.filter(a => a.verified).map(a => (
+                          <AgentCard key={a.id} agent={a} onApprove={handleApproveAgent} onReject={handleRejectAgent} />
+                        ))}
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </TabsContent>
 

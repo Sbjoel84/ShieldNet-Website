@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { apiFetch } from '@/hooks/useApi'
+import { getDiaryEntries, addDiaryEntry } from '@/lib/db'
 import { formatDate } from '@/lib/utils'
 import type { FarmDiaryEntry, Farm } from '@/lib/types'
 
@@ -31,8 +31,8 @@ export function FarmDiary({ farms }: Props) {
   const [form, setForm]         = useState({ farm_id: '', activity: '', notes: '', weather: '', date: todayISO() })
 
   useEffect(() => {
-    apiFetch<{ entries: FarmDiaryEntry[] }>('/api/diary')
-      .then(d => setEntries(d.entries))
+    getDiaryEntries()
+      .then(list => setEntries(list))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
@@ -47,11 +47,8 @@ export function FarmDiary({ farms }: Props) {
     if (!form.activity || !form.notes) return
     setSaving(true)
     try {
-      const data = await apiFetch<{ entry: FarmDiaryEntry }>('/api/diary', {
-        method: 'POST',
-        body: JSON.stringify(form),
-      })
-      setEntries(prev => [data.entry, ...prev])
+      const entry = await addDiaryEntry(form)
+      setEntries(prev => [entry, ...prev])
       setOpen(false)
       setForm(f => ({ ...f, activity: '', notes: '', weather: '', date: todayISO() }))
     } catch (e) {

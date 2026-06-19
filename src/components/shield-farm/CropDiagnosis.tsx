@@ -3,7 +3,7 @@ import { Upload, Leaf, CheckCircle2, Clock, Loader2, Bot } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { apiFetch } from '@/hooks/useApi'
+import { getDiagnoses, addDiagnosis } from '@/lib/db'
 import { formatDate } from '@/lib/utils'
 import type { CropDiagnosis as Diag, Farm } from '@/lib/types'
 
@@ -32,8 +32,8 @@ export function CropDiagnosis({ farms }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    apiFetch<{ diagnoses: Diag[] }>('/api/diagnoses')
-      .then(d => setHistory(d.diagnoses))
+    getDiagnoses()
+      .then(list => setHistory(list))
       .catch(() => {})
       .finally(() => setHistLoading(false))
   }, [])
@@ -60,11 +60,8 @@ export function CropDiagnosis({ farms }: Props) {
 
     try {
       const farmId = farms[0]?.id ?? null
-      const saved = await apiFetch<{ diagnosis: Diag }>('/api/diagnoses', {
-        method: 'POST',
-        body: JSON.stringify({ ...MOCK_RESULT, farm_id: farmId, image_url: preview }),
-      })
-      setHistory(prev => [saved.diagnosis, ...prev])
+      const saved = await addDiagnosis({ ...MOCK_RESULT, farm_id: farmId, image_url: preview })
+      setHistory(prev => [saved, ...prev])
     } catch {
       // don't block UI if save fails
     }

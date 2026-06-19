@@ -20,7 +20,7 @@ export function TermsOfService() {
 
         <section>
           <p className="text-base leading-relaxed">
-            These Terms of Service ("Terms") govern your access to and use of the ShieldNet Core Technologies Ltd platform ("ShieldNet", "we", "us"), including ShieldNet AI, ShieldFarm, and ShieldNet Properties, and all related services, websites, and applications.
+            These Terms of Service ("Terms") govern your access to and use of the ShieldNetCore Technologies Ltd platform ("ShieldNet", "we", "us"), including ShieldNet AI, ShieldFarm, and ShieldNet Properties, and all related services, websites, and applications.
           </p>
           <p className="text-base leading-relaxed mt-3">
             By creating an account or accessing our platform, you agree to be bound by these Terms and our Privacy Policy. If you do not agree, you must not use our services.
@@ -117,7 +117,7 @@ export function TermsOfService() {
 
         <Section title="8. Intellectual Property">
           <ul>
-            <li>All content, trademarks, logos, software, and data on the ShieldNet platform are the intellectual property of ShieldNet Core Technologies Ltd or its licensors.</li>
+            <li>All content, trademarks, logos, software, and data on the ShieldNet platform are the intellectual property of ShieldNetCore Technologies Ltd or its licensors.</li>
             <li>You may not copy, reproduce, distribute, or create derivative works from any ShieldNet content without prior written consent.</li>
             <li>You retain ownership of content you submit (listings, photos, diary entries). By submitting content, you grant ShieldNet a non-exclusive, royalty-free licence to use, display, and process that content to provide the services.</li>
             <li>You warrant that content you submit does not infringe any third-party intellectual property rights.</li>
@@ -179,7 +179,7 @@ export function TermsOfService() {
             <li><strong>General Enquiries:</strong> <a href="mailto:info@shieldnet.ng" className="text-green-400 hover:underline">info@shieldnet.ng</a></li>
             <li><strong>Legal / Compliance:</strong> <a href="mailto:legal@shieldnet.ng" className="text-green-400 hover:underline">legal@shieldnet.ng</a></li>
             <li><strong>Security Issues:</strong> <a href="mailto:security@shieldnet.ng" className="text-green-400 hover:underline">security@shieldnet.ng</a></li>
-            <li><strong>Address:</strong> ShieldNet Core Technologies Ltd, Abuja, Federal Capital Territory, Nigeria</li>
+            <li><strong>Address:</strong> ShieldNetCore Technologies Ltd, Abuja, Federal Capital Territory, Nigeria</li>
           </ul>
         </Section>
 

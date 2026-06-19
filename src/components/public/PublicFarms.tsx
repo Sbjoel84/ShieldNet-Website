@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { apiFetch } from '@/hooks/useApi'
+import { getMarketPrices, addApplication } from '@/lib/db'
 import { formatDate } from '@/lib/utils'
 import type { MarketPrice } from '@/lib/types'
 
@@ -36,8 +36,8 @@ export function PublicFarms() {
   const [pricesLoading, setPricesLoading] = useState(true)
 
   useEffect(() => {
-    apiFetch<{ prices: MarketPrice[] }>('/api/market-prices')
-      .then(d => setPrices(d.prices))
+    getMarketPrices()
+      .then(list => setPrices(list))
       .catch(() => {})
       .finally(() => setPricesLoading(false))
   }, [])
@@ -49,18 +49,16 @@ export function PublicFarms() {
     setSending(true)
     setSendError(null)
     try {
-      await apiFetch('/api/applications', {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'farm_consultation',
-          full_name: form.full_name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message || 'Farm consultation request',
-          crop_type: form.crop_type,
-          farm_size_ha: form.farm_size_ha ? Number(form.farm_size_ha) : undefined,
-          challenge: form.challenge,
-        }),
+      await addApplication({
+        type: 'farm_consultation',
+        full_name: form.full_name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message || 'Farm consultation request',
+        crop_type: form.crop_type,
+        farm_size_ha: form.farm_size_ha ? Number(form.farm_size_ha) : undefined,
+        challenge: form.challenge,
+        priority: 'medium',
       })
       setDone(true)
     } catch (e) {

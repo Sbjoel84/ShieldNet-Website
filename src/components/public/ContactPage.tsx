@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Clock, ShieldCheck, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { apiFetch } from '@/hooks/useApi'
+import { addApplication } from '@/lib/db'
 
 const SUBJECTS = [
   'Property Inquiry', 'Farm Consultation', 'Partnership Proposal', 'Bulk Listing Arrangement',
@@ -11,10 +11,13 @@ const SUBJECTS = [
 ]
 
 const CONTACT_INFO = [
-  { icon: MapPin, label: 'Offices', value: 'Abuja (HQ) & Lagos, Nigeria' },
-  { icon: Mail,   label: 'Email',   value: 'info@shieldnet.ng',  href: 'mailto:info@shieldnet.ng' },
-  { icon: Phone,  label: 'Phone',   value: '+234 800 000 0000',  href: 'tel:+2348000000000' },
-  { icon: Clock,  label: 'Hours',   value: 'Mon–Fri, 8am–6pm WAT' },
+  { icon: MapPin, label: 'Offices', lines: [{ text: 'Abuja (HQ) & Lagos, Nigeria' }] },
+  { icon: Mail,   label: 'Email',   lines: [{ text: 'info@shieldnet.ng', href: 'mailto:info@shieldnet.ng' }] },
+  { icon: Phone,  label: 'Phone',   lines: [
+    { text: '+234 803 309 8318', href: 'tel:+2348033098318' },
+    { text: '+234 703 075 1474', href: 'tel:+2347030751474' },
+  ]},
+  { icon: Clock,  label: 'Hours',   lines: [{ text: 'Mon–Fri, 8am–6pm WAT' }] },
 ]
 
 const EMPTY = { full_name: '', email: '', phone: '', subject: '', message: '' }
@@ -32,10 +35,7 @@ export function ContactPage() {
     setSending(true)
     setError(null)
     try {
-      await apiFetch('/api/applications', {
-        method: 'POST',
-        body: JSON.stringify({ ...form, type: 'general_contact' }),
-      })
+      await addApplication({ ...form, type: 'general_contact', priority: 'medium' })
       setDone(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to send. Please try again.')
@@ -72,11 +72,13 @@ export function ContactPage() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-0.5">{c.label}</p>
-                    {c.href ? (
-                      <a href={c.href} className="text-sm font-medium hover:text-green-400 transition-colors">{c.value}</a>
-                    ) : (
-                      <p className="text-sm font-medium">{c.value}</p>
-                    )}
+                    {c.lines.map(line => (
+                      line.href ? (
+                        <a key={line.text} href={line.href} className="block text-sm font-medium hover:text-green-400 transition-colors">{line.text}</a>
+                      ) : (
+                        <p key={line.text} className="text-sm font-medium">{line.text}</p>
+                      )
+                    ))}
                   </div>
                 </CardContent>
               </Card>

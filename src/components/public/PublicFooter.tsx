@@ -13,8 +13,8 @@ export function PublicFooter() {
                 <img src="/logo-alt.svg" alt="ShieldNet" className="w-10 h-10 object-contain bg-white" />
               </div>
               <div>
-                <p className="text-sm font-bold leading-none">ShieldNet</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">Core Technologies</p>
+                <p className="text-sm font-bold leading-none">ShieldNetCore</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Technologies</p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed mb-1">
@@ -60,9 +60,10 @@ export function PublicFooter() {
             <h4 className="text-sm font-semibold mb-4">Company</h4>
             <ul className="space-y-2.5">
               {[
-                { to: '/about',   label: 'About Us' },
-                { to: '/contact', label: 'Contact' },
-                { to: '/about#team', label: 'Leadership' },
+                { to: '/about',          label: 'About Us' },
+                { to: '/contact',        label: 'Contact' },
+                { to: '/about#team',     label: 'Leadership' },
+                { to: '/agent-register', label: 'Become an Agent' },
               ].map(({ to, label }) => (
                 <li key={to}>
                   <Link to={to} className="text-sm text-muted-foreground hover:text-green-400 transition-colors">{label}</Link>
@@ -81,20 +82,26 @@ export function PublicFooter() {
                 <MapPin className="w-4 h-4 text-green-400 shrink-0 mt-0.5" />
                 <span>Abuja & Lagos, Nigeria</span>
               </li>
-              <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4 text-green-400 shrink-0" />
-                <a href="mailto:info@shieldnet.ng" className="hover:text-green-400 transition-colors">info@shieldnet.ng</a>
+              <li className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4 text-green-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <a href="mailto:info@shieldnet.ng" className="block hover:text-green-400 transition-colors">info@shieldnet.ng</a>
+                  <a href="mailto:shieldnetcore@gmail.com" className="block hover:text-green-400 transition-colors">shieldnetcore@gmail.com</a>
+                </div>
               </li>
-              <li className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4 text-green-400 shrink-0" />
-                <a href="tel:+2348000000000" className="hover:text-green-400 transition-colors">+234 800 000 0000</a>
+              <li className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                <Phone className="w-4 h-4 text-green-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <a href="tel:+2348033098318" className="block hover:text-green-400 transition-colors">+234 803 309 8318</a>
+                  <a href="tel:+2347030751474" className="block hover:text-green-400 transition-colors">+234 703 075 1474</a>
+                </div>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-border mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} ShieldNet Core Technologies Ltd. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} ShieldNetCore Technologies Ltd. All rights reserved.</p>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span>Built by ShieldNet. Powered by AI.</span>
             <span className="flex items-center gap-1">

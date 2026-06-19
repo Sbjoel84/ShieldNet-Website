@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
-import { apiFetch } from '@/hooks/useApi'
+import { getStats, getFarms } from '@/lib/db'
 import { formatNaira } from '@/lib/utils'
 import { useNavigate } from 'react-router-dom'
 import type { Property, Farm } from '@/lib/types'
@@ -33,10 +33,10 @@ export function Overview() {
 
   useEffect(() => {
     Promise.all([
-      apiFetch<Stats>('/api/stats'),
-      apiFetch<{ farms: Farm[] }>('/api/farms'),
+      getStats(),
+      getFarms(),
     ])
-      .then(([s, f]) => { setStats(s); setFarms(f.farms) })
+      .then(([s, f]) => { setStats(s); setFarms(f) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])

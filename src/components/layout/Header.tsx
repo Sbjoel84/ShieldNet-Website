@@ -39,7 +39,7 @@ export function Header({ onMenuToggle }: HeaderProps) {
         <div>
           <h1 className="text-base font-semibold leading-none">{title}</h1>
           <p className="text-[11px] text-muted-foreground mt-0.5 hidden sm:block">
-            ShieldNet Core Technologies · Nigeria
+            ShieldNetCore Technologies · Nigeria
           </p>
         </div>
       </div>

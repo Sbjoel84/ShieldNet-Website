@@ -90,7 +90,7 @@ export interface MarketPrice {
 
 export interface AdminQueueItem {
   id: string
-  type: 'property_approval' | 'ai_scan_review' | 'fraud_report'
+  type: 'property_approval' | 'ai_scan_review' | 'fraud_report' | 'agent_approval'
   ref_id: string
   title: string
   submitted_by: string

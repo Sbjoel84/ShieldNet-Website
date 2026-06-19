@@ -105,7 +105,7 @@ export function LandingPage() {
             <span className="text-green-400">We Power Growth.</span>
           </h1>
           <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-3 leading-relaxed">
-            ShieldNet Core Technologies (Abuja) is a full-service technology company delivering custom software solutions, AI systems, and digital platforms for businesses, individuals, and high-impact sectors.
+            ShieldNetCore Technologies (Abuja) is a full-service technology company delivering custom software solutions, AI systems, and digital platforms for businesses, individuals, and high-impact sectors.
           </p>
           <p className="text-sm text-muted-foreground/70 max-w-xl mx-auto mb-8 leading-relaxed">
             We also build proprietary AI products under the Shield brand — designed to protect people and assets across Nigeria.
@@ -135,6 +135,18 @@ export function LandingPage() {
             <Button variant="outline" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/properties')}>
               View Products <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
+          </div>
+
+          {/* Agent CTA */}
+          <div className="mt-6">
+            <Link
+              to="/agent-register"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-green-400 transition-colors group"
+            >
+              <Users className="w-4 h-4 group-hover:text-green-400" />
+              Are you a property agent?{' '}
+              <span className="text-green-400 font-medium underline underline-offset-2">Register here</span>
+            </Link>
           </div>
         </div>
       </section>
