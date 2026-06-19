@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, ElementType } from 'react'
 import { Mail, Phone, MapPin, Clock, ShieldCheck, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,7 +10,7 @@ const SUBJECTS = [
   'Technical Support', 'Media / Press', 'Career Opportunities', 'Other',
 ]
 
-const CONTACT_INFO = [
+const CONTACT_INFO: { icon: ElementType; label: string; lines: { text: string; href?: string }[] }[] = [
   { icon: MapPin, label: 'Offices', lines: [{ text: 'Abuja (HQ) & Lagos, Nigeria' }] },
   { icon: Mail,   label: 'Email',   lines: [{ text: 'info@shieldnet.ng', href: 'mailto:info@shieldnet.ng' }] },
   { icon: Phone,  label: 'Phone',   lines: [
