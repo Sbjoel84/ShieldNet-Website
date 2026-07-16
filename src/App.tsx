@@ -40,9 +40,16 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
-function AppRoutes() {
+function AdminRoute({ children }: { children: React.ReactNode }) {
   const { profile, loading } = useAuth()
   if (loading) return <LoadingScreen />
+  if (!profile) return <Navigate to="/auth" replace />
+  if (profile.role !== 'admin') return <Navigate to="/dashboard" replace />
+  return <>{children}</>
+}
+
+function AppRoutes() {
+  const { profile } = useAuth()
   return (
     <Routes>
       <Route path="/auth" element={(profile?.role === 'admin' || profile?.role === 'agent') ? <Navigate to="/dashboard" replace /> : <AuthPage />} />
@@ -66,10 +73,10 @@ function AppRoutes() {
         <Route path="farms" element={<ShieldFarm />} />
         <Route path="properties" element={<Properties />} />
         <Route path="ai-tools" element={<AITools />} />
-        <Route path="admin" element={<AdminQueue />} />
+        <Route path="admin" element={<AdminRoute><AdminQueue /></AdminRoute>} />
       </Route>
 
-      <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/admin" element={<AdminRoute><Navigate to="/dashboard/admin" replace /></AdminRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
