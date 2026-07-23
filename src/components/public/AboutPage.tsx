@@ -13,7 +13,7 @@ const TEAM = [
   },
   {
     name: 'Joel Yahaya',
-    role: 'Chief Commercial Executive Officer (CCEO)',
+    role: 'Chief Company Executive Officer (CCEO)',
     img: '/joel.png',
     bio: 'Leads ShieldNet\'s commercial strategy, investor relations, and growth across Nigeria\'s real estate and agricultural sectors. Joel ensures every partnership delivers real value to users.',
   },
