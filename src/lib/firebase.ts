@@ -11,6 +11,13 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
+if (!firebaseConfig.apiKey) {
+  throw new Error(
+    'Firebase config is missing. Set VITE_FIREBASE_* variables in .env.development ' +
+    '(local dev) or .env.production (build). See .env.production for the expected keys.',
+  )
+}
+
 export const firebaseApp = initializeApp(firebaseConfig)
 export const auth = getAuth(firebaseApp)
 export const db   = getFirestore(firebaseApp)

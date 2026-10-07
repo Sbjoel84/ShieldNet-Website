@@ -1,8 +1,10 @@
-import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, Target, Eye, Heart, Users, Wheat, Building2, Bot, Cpu, ArrowRight, Globe2, Database, Code2, Palette } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
+import { ShieldCheck, Target, Eye, Heart, Users, Wheat, Building2, Bot, Cpu, ArrowRight, Globe2, Database, Code2, Palette, Briefcase } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { PROJECTS, CLIENT_LOGOS } from '@/data/projects'
 
 const TEAM = [
   {
@@ -37,6 +39,22 @@ const MILESTONES = [
 
 export function AboutPage() {
   const navigate = useNavigate()
+  const { hash } = useLocation()
+  const [highlighted, setHighlighted] = useState<string | null>(null)
+
+  // Scroll to a project card when arriving from a client logo link (e.g. /about#project-bevick)
+  useEffect(() => {
+    if (!hash) return
+    const id = hash.slice(1)
+    // Short delay lets images above the section load so the scroll target doesn't shift
+    const scroll = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setHighlighted(id)
+    }, 150)
+    const clear = setTimeout(() => setHighlighted(null), 2800)
+    return () => { clearTimeout(scroll); clearTimeout(clear) }
+  }, [hash])
+
   return (
     <div>
       {/* Hero */}
@@ -180,6 +198,54 @@ export function AboutPage() {
           </div>
         </section>
 
+        {/* Projects / Clients */}
+        <section id="projects">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-4">
+              <Briefcase className="w-3.5 h-3.5" />
+              Our Work
+            </div>
+            <h2 className="text-2xl font-bold mb-3">Projects We've Delivered</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Beyond the Shield platform, we build software that runs real businesses. Here are some of the organisations we've partnered with so far.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {PROJECTS.map(p => (
+              <div
+                key={p.slug}
+                id={`project-${p.slug}`}
+                className={`scroll-mt-24 rounded-2xl border bg-card overflow-hidden flex flex-col transition-all duration-500 ${highlighted === `project-${p.slug}` ? 'border-green-500 ring-4 ring-green-500/30 scale-[1.02]' : 'border-border'}`}
+              >
+                <div className="h-32 bg-white flex items-center justify-center p-4">
+                  {p.logo ? (
+                    <img src={p.logo} alt={`${p.name} logo`} className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <span className="text-3xl font-bold text-green-600 tracking-tight">
+                      {p.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5 flex flex-col gap-2 flex-1">
+                  <Badge className="w-fit text-[10px] bg-green-500/20 text-green-300 border-green-500/30">{p.category}</Badge>
+                  <h3 className="font-semibold">{p.name}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10">
+            <p className="text-center text-xs uppercase tracking-widest text-muted-foreground/70 mb-5">Trusted by</p>
+            <div className="flex flex-wrap justify-center gap-4">
+              {CLIENT_LOGOS.map(c => (
+                <Link key={c.name} to={c.href} title={c.name} className="w-40 h-20 rounded-xl bg-white border border-border flex items-center justify-center p-3 hover:border-green-500 transition-colors">
+                  <img src={c.src} alt={`${c.name} logo`} className="max-h-full max-w-full object-contain" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Stats */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
           {[
@@ -218,7 +284,7 @@ export function AboutPage() {
           <div className="flex flex-wrap justify-center gap-10">
             {TEAM.map(m => (
               <div key={m.name} className="flex flex-col items-center text-center max-w-sm">
-                <div className="w-36 h-36 rounded-full overflow-hidden ring-4 ring-green-500/20 mb-5">
+                <div className="w-44 h-44 rounded-3xl overflow-hidden ring-4 ring-green-500/20 mb-5">
                   <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
                 </div>
                 <h3 className="font-bold text-xl mb-1">{m.name}</h3>

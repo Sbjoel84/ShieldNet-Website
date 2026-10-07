@@ -6,6 +6,7 @@ import {
 import { ShieldLogo } from '@/components/ui/ShieldLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { CLIENT_LOGOS } from '@/data/projects'
 import type { LucideIcon } from 'lucide-react'
 
 type ShieldProduct = {
@@ -160,6 +161,29 @@ export function LandingPage() {
                 <p className="text-3xl sm:text-4xl font-extrabold text-green-400 mb-1">{s.value}</p>
                 <p className="text-sm text-muted-foreground">{s.label}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Clients ── */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground/70 mb-3">Trusted by</p>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">Businesses We've Built For</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">Click a logo to see what we delivered.</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            {CLIENT_LOGOS.map(c => (
+              <Link
+                key={c.name}
+                to={c.href}
+                title={c.name}
+                className="w-36 h-20 sm:w-44 sm:h-24 rounded-xl bg-white border border-border flex items-center justify-center p-3 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-0.5 transition-all"
+              >
+                <img src={c.src} alt={`${c.name} logo`} className="max-h-full max-w-full object-contain" />
+              </Link>
             ))}
           </div>
         </div>
