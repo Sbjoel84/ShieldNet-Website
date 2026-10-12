@@ -6,6 +6,7 @@ import {
 import { ShieldLogo } from '@/components/ui/ShieldLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Reveal, CountUp } from '@/components/ui/Reveal'
 import { CLIENT_LOGOS } from '@/data/projects'
 import type { LucideIcon } from 'lucide-react'
 
@@ -93,22 +94,27 @@ export function LandingPage() {
       <section className="relative min-h-[90vh] flex items-start">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat hero-bg" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        {/* Drifting glow blobs */}
+        <div className="pointer-events-none absolute -top-20 -left-20 w-96 h-96 rounded-full bg-green-500/20 blur-3xl blob" />
+        <div className="pointer-events-none absolute top-1/3 -right-24 w-[28rem] h-[28rem] rounded-full bg-cyan-500/10 blur-3xl blob [animation-delay:-7s]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-20 text-center w-full">
-          <div className="flex justify-center mb-6">
-            <ShieldLogo sizeClass="w-64 h-64" wrapperClassName="rounded-3xl shadow-2xl shadow-black/50 ring-2 ring-green-500/40" />
+          <div className="flex justify-center mb-6 hero-in">
+            <div className="float">
+              <ShieldLogo sizeClass="w-64 h-64" wrapperClassName="rounded-3xl shadow-2xl shadow-black/50 ring-2 ring-green-500/40" />
+            </div>
           </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium mb-6 hero-in [animation-delay:150ms]">
             <ShieldCheck className="w-3.5 h-3.5" />
             Nigeria's AI-Powered Technology & Software Solutions Company
           </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 max-w-4xl mx-auto hero-in [animation-delay:300ms]">
             We Build. We Protect.<br />
-            <span className="text-green-400">We Power Growth.</span>
+            <span className="text-shimmer">We Power Growth.</span>
           </h1>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-3 leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto mb-3 leading-relaxed hero-in [animation-delay:450ms]">
             ShieldNetCore Technologies (Abuja) is a full-service technology company delivering custom software solutions, AI systems, and digital platforms for businesses, individuals, and high-impact sectors.
           </p>
-          <p className="text-sm text-muted-foreground/70 max-w-xl mx-auto mb-8 leading-relaxed">
+          <p className="text-sm text-muted-foreground/70 max-w-xl mx-auto mb-8 leading-relaxed hero-in [animation-delay:550ms]">
             We also build proprietary AI products under the Shield brand — designed to protect people and assets across Nigeria.
           </p>
 
@@ -121,15 +127,15 @@ export function LandingPage() {
               'AI-powered applications',
               'Digital branding & product design',
               'Sector-specific protection systems',
-            ].map(item => (
-              <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+            ].map((item, i) => (
+              <div key={item} className="flex items-center gap-2 text-sm text-muted-foreground hero-in" style={{ animationDelay: `${650 + i * 80}ms` }}>
                 <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
                 {item}
               </div>
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-wrap gap-4 justify-center hero-in [animation-delay:1150ms]">
             <Button variant="shield" size="lg" className="h-12 px-8 text-base" onClick={() => navigate('/contact')}>
               Explore Services <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
@@ -139,7 +145,7 @@ export function LandingPage() {
           </div>
 
           {/* Agent CTA */}
-          <div className="mt-6">
+          <div className="mt-6 hero-in [animation-delay:1250ms]">
             <Link
               to="/agent-register"
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-green-400 transition-colors group"
@@ -156,11 +162,11 @@ export function LandingPage() {
       <section className="bg-card border-y border-border py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {STATS.map(s => (
-              <div key={s.label} className="text-center">
-                <p className="text-3xl sm:text-4xl font-extrabold text-green-400 mb-1">{s.value}</p>
+            {STATS.map((s, i) => (
+              <Reveal key={s.label} variant="zoom" delay={i * 120} className="text-center">
+                <CountUp value={s.value} className="block text-3xl sm:text-4xl font-extrabold text-green-400 mb-1" />
                 <p className="text-sm text-muted-foreground">{s.label}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -169,21 +175,22 @@ export function LandingPage() {
       {/* ── Clients ── */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
+          <Reveal className="text-center mb-10">
             <p className="text-xs uppercase tracking-widest text-muted-foreground/70 mb-3">Trusted by</p>
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">Businesses We've Built For</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Click a logo to see what we delivered.</p>
-          </div>
+          </Reveal>
           <div className="flex flex-wrap justify-center gap-4">
-            {CLIENT_LOGOS.map(c => (
-              <Link
-                key={c.name}
-                to={c.href}
-                title={c.name}
-                className="w-36 h-20 sm:w-44 sm:h-24 rounded-xl bg-white border border-border flex items-center justify-center p-3 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/10 hover:-translate-y-0.5 transition-all"
-              >
-                <img src={c.src} alt={`${c.name} logo`} className="max-h-full max-w-full object-contain" />
-              </Link>
+            {CLIENT_LOGOS.map((c, i) => (
+              <Reveal key={c.name} variant="flip" delay={i * 100}>
+                <Link
+                  to={c.href}
+                  title={c.name}
+                  className="w-36 h-20 sm:w-44 sm:h-24 rounded-xl bg-white border border-border flex items-center justify-center p-3 hover:border-green-500 hover:shadow-lg hover:shadow-green-500/20 hover:-translate-y-1 hover:scale-105 transition-all duration-300"
+                >
+                  <img src={c.src} alt={`${c.name} logo`} className="max-h-full max-w-full object-contain" />
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -192,21 +199,21 @@ export function LandingPage() {
       {/* ── Two Focus Areas ── */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-5">
-              <Layers className="w-3.5 h-3.5" />
+              <Layers className="w-3.5 h-3.5 reveal-icon" />
               A Technology Company With Two Focus Areas
             </div>
             <h2 className="text-3xl font-bold mb-3">What ShieldNet Does</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">ShieldNet operates in two powerful directions — serving clients and building our own innovation.</p>
-          </div>
+          </Reveal>
           <div className="grid lg:grid-cols-2 gap-8">
 
             {/* Focus 1: Client Solutions */}
-            <div className="p-8 rounded-2xl bg-card border border-border">
+            <Reveal variant="left" className="group p-8 rounded-2xl bg-card border border-border card-lift hover:border-blue-500/40">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                  <Code2 className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 reveal-icon">
+                  <Code2 className="w-5 h-5 text-blue-400 hover-wiggle" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-0.5">Focus Area 1</p>
@@ -224,23 +231,23 @@ export function LandingPage() {
                   'Database & backend infrastructure',
                   'AI integration for business automation',
                   'UI/UX design & branding systems',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm">
+                ].map((item, i) => (
+                  <Reveal as="li" key={item} variant="left" delay={300 + i * 80} duration={600} className="flex items-center gap-2.5 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0" />
                     {item}
-                  </li>
+                  </Reveal>
                 ))}
               </ul>
               <p className="text-xs text-muted-foreground/60 italic border-t border-border pt-4">
                 We don't just build products — we build working digital ecosystems that solve real problems.
               </p>
-            </div>
+            </Reveal>
 
             {/* Focus 2: Shield Products */}
-            <div className="p-8 rounded-2xl bg-card border border-border">
+            <Reveal variant="right" delay={150} className="group p-8 rounded-2xl bg-card border border-border card-lift hover:border-green-500/40">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5 text-green-400" />
+                <div className="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 reveal-icon">
+                  <ShieldCheck className="w-5 h-5 text-green-400 hover-wiggle" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-0.5">Focus Area 2</p>
@@ -256,32 +263,35 @@ export function LandingPage() {
                   'ShieldHome — real estate fraud protection',
                   'ShieldFarm — smart agriculture assistant',
                   'ShieldHer — personal safety system for women',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm">
+                ].map((item, i) => (
+                  <Reveal as="li" key={item} variant="right" delay={450 + i * 80} duration={600} className="flex items-center gap-2.5 text-sm">
                     <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
                     {item}
-                  </li>
+                  </Reveal>
                 ))}
               </ul>
               <Button variant="outline" size="sm" onClick={() => navigate('/ai-tools')}>
                 Explore ShieldNet AI <ArrowRight className="ml-2 w-3.5 h-3.5" />
               </Button>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* ── Unified AI Platform ── */}
-      <section className="py-14 bg-card border-y border-border">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-5">
-            <Cpu className="w-3.5 h-3.5" />
-            Unified AI Platform
-          </div>
-          <h2 className="text-2xl font-bold mb-3">ShieldNet AI — The Core Intelligence Layer</h2>
-          <p className="text-base text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
-            Our AI system powers both client solutions and internal Shield products — delivering intelligence where it matters most.
-          </p>
+      <section className="relative py-14 bg-card border-y border-border overflow-hidden">
+        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[36rem] h-64 rounded-full bg-purple-500/10 blur-3xl blob" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
+          <Reveal variant="zoom">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-5 shield-glow">
+              <Cpu className="w-3.5 h-3.5 reveal-icon" />
+              Unified AI Platform
+            </div>
+            <h2 className="text-2xl font-bold mb-3">ShieldNet AI — The Core Intelligence Layer</h2>
+            <p className="text-base text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
+              Our AI system powers both client solutions and internal Shield products — delivering intelligence where it matters most.
+            </p>
+          </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
             {[
               { label: 'Fraud Detection',        desc: 'Real-time scanning of listings, identities, and transactions.' },
@@ -290,11 +300,11 @@ export function LandingPage() {
               { label: 'Real-time Intelligence', desc: 'Live data feeds, alerts, and situational awareness.' },
               { label: 'Predictive Analytics',   desc: 'Forecast crop disease, fraud patterns, and market trends.' },
               { label: 'AI Integration API',     desc: 'Plug ShieldNet AI directly into your own business systems.' },
-            ].map(f => (
-              <div key={f.label} className="p-4 rounded-xl bg-muted/30 border border-border">
+            ].map((f, i) => (
+              <Reveal key={f.label} variant="up" delay={i * 100} className="p-4 rounded-xl bg-muted/30 border border-border card-lift hover:border-purple-500/40">
                 <p className="text-sm font-semibold mb-1 text-purple-300">{f.label}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -303,26 +313,26 @@ export function LandingPage() {
       {/* ── Four Shields ── */}
       <section id="products" className="py-20 bg-purple-500/10 border-y border-purple-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">Four Shields of Protection</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Our in-house platforms built for public protection — all powered by ShieldNet AI.</p>
-          </div>
+          </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {SHIELD_PRODUCTS.map(s => (
+            {SHIELD_PRODUCTS.map((s, i) => (
+              <Reveal key={s.title} variant="flip" delay={i * 150} duration={900}>
               <Link
-                key={s.title}
                 to={s.soon ? '#' : s.to}
                 onClick={s.soon ? e => e.preventDefault() : undefined}
-                className={`group relative p-6 rounded-2xl border ${s.border} ${s.bg} ${s.soon ? 'cursor-default opacity-80' : 'hover:scale-[1.02] transition-transform'}`}
+                className={`group relative block h-full p-6 rounded-2xl border ${s.border} ${s.bg} ${s.soon ? 'cursor-default opacity-80' : 'hover:scale-[1.03] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30 transition-all duration-300'}`}
               >
                 {s.soon && (
                   <Badge className="absolute top-3 right-3 text-[10px] bg-rose-500/20 text-rose-300 border-rose-500/30">
                     Coming Soon
                   </Badge>
                 )}
-                <div className="w-12 h-12 rounded-xl bg-background/50 flex items-center justify-center mb-4 overflow-hidden">
+                <div className="w-12 h-12 rounded-xl bg-background/50 flex items-center justify-center mb-4 overflow-hidden reveal-icon">
                   {'logo' in s && s.logo
-                    ? <img src={s.logo} alt={s.title} className="w-full h-full object-cover rounded-xl" />
+                    ? <img src={s.logo} alt={s.title} className="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform duration-500" />
                     : 'icon' in s && s.icon && <s.icon className={`w-6 h-6 ${s.color}`} />
                   }
                 </div>
@@ -332,6 +342,7 @@ export function LandingPage() {
                   {s.cta} {!s.soon && <ArrowRight className="w-4 h-4" />}
                 </span>
               </Link>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -340,17 +351,17 @@ export function LandingPage() {
       {/* ── Our Services ── */}
       <section id="what-we-do" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">We Also Build For Businesses & Organizations</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">ShieldNet provides end-to-end technology services for every stage of your digital journey.</p>
-          </div>
+          </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {CLIENT_SERVICES.map(s => (
-              <div key={s.title} className={`p-6 rounded-2xl border ${s.border} ${s.bg} flex flex-col gap-3`}>
-                <s.icon className={`w-7 h-7 ${s.color}`} />
+            {CLIENT_SERVICES.map((s, i) => (
+              <Reveal key={s.title} variant="up" delay={i * 120} className={`group p-6 rounded-2xl border ${s.border} ${s.bg} flex flex-col gap-3 card-lift`}>
+                <span className="reveal-icon w-fit"><s.icon className={`w-7 h-7 ${s.color} hover-wiggle`} /></span>
                 <h3 className="font-semibold">{s.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -359,19 +370,19 @@ export function LandingPage() {
       {/* ── How We Work ── */}
       <section className="py-20 bg-card border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
+          <Reveal className="text-center mb-14">
             <h2 className="text-3xl font-bold mb-3">From Idea to Deployment in 4 Steps</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">A clear, structured process that takes your vision from concept to a live, working system.</p>
-          </div>
+          </Reveal>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {HOW_WE_WORK.map(s => (
-              <div key={s.n} className="flex flex-col gap-3">
-                <div className="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+            {HOW_WE_WORK.map((s, i) => (
+              <Reveal key={s.n} variant="right" delay={i * 200} className="group flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center reveal-icon group-hover:bg-green-500/20 transition-colors">
                   <span className="text-lg font-extrabold text-green-400">{s.n}</span>
                 </div>
                 <h4 className="font-semibold">{s.title}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -379,13 +390,13 @@ export function LandingPage() {
 
       {/* ── Testimonials ── */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-14">
+        <Reveal className="text-center mb-14">
           <h2 className="text-3xl font-bold mb-3">Real-World Results</h2>
           <p className="text-muted-foreground">Trusted by businesses, partners, and individuals across Nigeria.</p>
-        </div>
+        </Reveal>
         <div className="grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map(t => (
-            <div key={t.name} className="p-6 rounded-2xl bg-card border border-border">
+          {TESTIMONIALS.map((t, i) => (
+            <Reveal key={t.name} variant="zoom" delay={i * 150} className="p-6 rounded-2xl bg-card border border-border card-lift hover:border-yellow-500/30">
               <div className="flex gap-0.5 mb-4">
                 {Array.from({ length: t.stars }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -396,7 +407,7 @@ export function LandingPage() {
                 <p className="text-sm font-semibold">{t.name}</p>
                 <p className="text-xs text-muted-foreground">{t.role}</p>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -405,7 +416,7 @@ export function LandingPage() {
       <section className="py-20 bg-card border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <Reveal variant="left">
               <h2 className="text-3xl font-bold mb-4">One Company. Multiple Capabilities.</h2>
               <p className="text-muted-foreground mb-8 leading-relaxed">
                 From software development to AI innovation — ShieldNet delivers at every level of the technology stack.
@@ -417,26 +428,26 @@ export function LandingPage() {
                   'Enterprise system builders',
                   'Real-world problem solvers',
                   'Trusted infrastructure partner',
-                ].map(f => (
-                  <li key={f} className="flex items-center gap-3 text-sm">
+                ].map((f, i) => (
+                  <Reveal as="li" key={f} variant="left" delay={250 + i * 100} duration={600} className="flex items-center gap-3 text-sm">
                     <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
                     {f}
-                  </li>
+                  </Reveal>
                 ))}
               </ul>
-            </div>
+            </Reveal>
             <div className="grid grid-cols-2 gap-4">
               {[
                 { icon: Users,       label: 'Active Users',           value: '18,000+', color: 'text-blue-400',   bg: 'bg-blue-500/10'   },
                 { icon: ShieldCheck, label: 'Verified Listings',      value: '2,400+',  color: 'text-green-400',  bg: 'bg-green-500/10'  },
                 { icon: Wheat,       label: 'Farms Monitored',        value: '1,200+',  color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
                 { icon: BarChart3,   label: 'Protected Transactions', value: '₦120B+',  color: 'text-purple-400', bg: 'bg-purple-500/10' },
-              ].map(s => (
-                <div key={s.label} className={`p-5 rounded-2xl ${s.bg} border border-border`}>
-                  <s.icon className={`w-6 h-6 ${s.color} mb-3`} />
-                  <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
+              ].map((s, i) => (
+                <Reveal key={s.label} variant="zoom" delay={i * 130} className={`group p-5 rounded-2xl ${s.bg} border border-border card-lift`}>
+                  <span className="reveal-icon block w-fit mb-3"><s.icon className={`w-6 h-6 ${s.color} hover-wiggle`} /></span>
+                  <CountUp value={s.value} className={`block text-2xl font-bold ${s.color}`} />
                   <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -445,8 +456,10 @@ export function LandingPage() {
 
       {/* ── Final CTA ── */}
       <section className="py-20 bg-gradient-to-b from-green-500/5 to-transparent border-t border-green-500/10">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <ShieldCheck className="w-14 h-14 text-green-400 mx-auto mb-6" />
+        <Reveal variant="zoom" duration={1000} className="max-w-2xl mx-auto px-4 text-center">
+          <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center bg-green-500/10 animate-shield-pulse">
+            <ShieldCheck className="w-12 h-12 text-green-400 float" />
+          </div>
           <h2 className="text-3xl font-bold mb-4">Let's Build Something Powerful Together</h2>
           <p className="text-muted-foreground mb-2 leading-relaxed">
             Whether you're a business, government, startup, or individual — we help you build, scale, and secure your digital systems.
@@ -462,7 +475,7 @@ export function LandingPage() {
               Talk to Us
             </Button>
           </div>
-        </div>
+        </Reveal>
       </section>
 
     </div>

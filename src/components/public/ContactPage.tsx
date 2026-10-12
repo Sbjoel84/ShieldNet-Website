@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Clock, ShieldCheck, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
+import { Reveal } from '@/components/ui/Reveal'
 import { addApplication } from '@/lib/db'
 
 const SUBJECTS = [
@@ -47,13 +48,15 @@ export function ContactPage() {
   return (
     <div>
       {/* Hero */}
-      <div className="bg-gradient-to-b from-green-500/10 to-transparent border-b border-border py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mx-auto mb-6">
+      <div className="relative overflow-hidden bg-gradient-to-b from-green-500/10 to-transparent border-b border-border py-16">
+        <div className="pointer-events-none absolute -top-24 left-1/4 w-80 h-80 rounded-full bg-green-500/15 blur-3xl blob" />
+        <div className="pointer-events-none absolute -bottom-32 right-1/4 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl blob [animation-delay:-7s]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <div className="w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-green-500/30 shadow-lg mx-auto mb-6 hero-in">
             <img src="/logo-alt.svg" alt="ShieldNet" className="w-full h-full object-contain bg-white" />
           </div>
-          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-          <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed">
+          <h1 className="text-4xl font-bold mb-4 hero-in [animation-delay:150ms]">Contact <span className="text-shimmer">Us</span></h1>
+          <p className="text-muted-foreground max-w-xl mx-auto text-lg leading-relaxed hero-in [animation-delay:300ms]">
             Have a question, partnership idea, or just want to say hi? We'd love to hear from you.
           </p>
         </div>
@@ -63,12 +66,13 @@ export function ContactPage() {
         <div className="grid lg:grid-cols-3 gap-10">
           {/* Contact Info */}
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold mb-6">Get in Touch</h2>
-            {CONTACT_INFO.map(c => (
-              <Card key={c.label}>
+            <Reveal as="h2" variant="left" className="text-lg font-semibold mb-6">Get in Touch</Reveal>
+            {CONTACT_INFO.map((c, i) => (
+              <Reveal key={c.label} variant="left" delay={100 + i * 120} className="group">
+              <Card className="card-lift hover:border-green-500/40">
                 <CardContent className="p-4 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0">
-                    <c.icon className="w-5 h-5 text-green-400" />
+                  <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0 reveal-icon group-hover:bg-green-500/20 transition-colors">
+                    <c.icon className="w-5 h-5 text-green-400 hover-wiggle" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-0.5">{c.label}</p>
@@ -82,20 +86,23 @@ export function ContactPage() {
                   </div>
                 </CardContent>
               </Card>
+              </Reveal>
             ))}
 
-            <div className="mt-6 p-4 rounded-xl bg-green-500/5 border border-green-500/20">
-              <ShieldCheck className="w-6 h-6 text-green-400 mb-2" />
+            <Reveal variant="up" delay={600} className="mt-6 p-4 rounded-xl bg-green-500/5 border border-green-500/20">
+              <ShieldCheck className="w-6 h-6 text-green-400 mb-2 reveal-icon" />
               <p className="text-sm font-medium mb-1">Admin Agents Available</p>
               <p className="text-xs text-muted-foreground">All contact submissions are reviewed by our team within 24 hours.</p>
-            </div>
+            </Reveal>
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-2">
+          <Reveal variant="right" delay={200} duration={900} className="lg:col-span-2">
             {done ? (
-              <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-                <ShieldCheck className="w-16 h-16 text-green-400" />
+              <div className="flex flex-col items-center justify-center gap-4 py-16 text-center hero-in">
+                <div className="w-24 h-24 rounded-full bg-green-500/10 flex items-center justify-center animate-shield-pulse">
+                  <ShieldCheck className="w-16 h-16 text-green-400" />
+                </div>
                 <h2 className="text-2xl font-bold">Message Sent!</h2>
                 <p className="text-muted-foreground max-w-sm">Thanks for reaching out. Our team will respond within 24 hours.</p>
                 <Button variant="shield" onClick={() => { setDone(false); setForm(EMPTY) }}>
@@ -157,7 +164,7 @@ export function ContactPage() {
                 </CardContent>
               </Card>
             )}
-          </div>
+          </Reveal>
         </div>
       </div>
     </div>

@@ -86,3 +86,88 @@
 .logo-shine-overlay {
   background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%);
 }
+
+/* ───────────── Scroll & entrance animations ───────────── */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity var(--reveal-duration, 800ms) cubic-bezier(.22,1,.36,1) var(--reveal-delay, 0ms),
+    transform var(--reveal-duration, 800ms) cubic-bezier(.22,1,.36,1) var(--reveal-delay, 0ms),
+    filter var(--reveal-duration, 800ms) ease var(--reveal-delay, 0ms),
+    translate .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, border-color .35s ease;
+  will-change: opacity, transform;
+}
+.reveal[data-variant="up"]    { transform: translate3d(0, 48px, 0); }
+.reveal[data-variant="down"]  { transform: translate3d(0, -40px, 0); }
+.reveal[data-variant="left"]  { transform: translate3d(-60px, 0, 0); }
+.reveal[data-variant="right"] { transform: translate3d(60px, 0, 0); }
+.reveal[data-variant="zoom"]  { transform: scale(.85); filter: blur(6px); }
+.reveal[data-variant="flip"]  { transform: perspective(900px) rotateX(25deg) translate3d(0, 40px, 0); transform-origin: top center; }
+.reveal.is-visible { opacity: 1; transform: none; filter: none; }
+
+/* Icons inside a revealed block pop in just after it lands */
+.reveal .reveal-icon { opacity: 0; transform: scale(.3) rotate(-25deg); }
+.reveal.is-visible .reveal-icon {
+  animation: icon-pop .7s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 250ms);
+}
+@keyframes icon-pop {
+  from { opacity: 0; transform: scale(.3) rotate(-25deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* Timeline line draws downward */
+.reveal .grow-line { transform: scaleY(0); transform-origin: top; transition: transform 1.6s cubic-bezier(.22,1,.36,1) .2s; }
+.reveal.is-visible .grow-line { transform: scaleY(1); }
+
+/* Page-load entrance for hero content */
+.hero-in { animation: hero-in 1s cubic-bezier(.22,1,.36,1) both; }
+@keyframes hero-in {
+  from { opacity: 0; transform: translate3d(0, 30px, 0); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+/* Gentle floating logo */
+.float { animation: float 6s ease-in-out infinite; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+/* Drifting background glow blobs */
+.blob { animation: blob 14s ease-in-out infinite; }
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(40px, -30px) scale(1.1); }
+  66%      { transform: translate(-30px, 20px) scale(.95); }
+}
+
+/* Shimmering gradient headline text */
+.text-shimmer {
+  background: linear-gradient(90deg, #4ade80 0%, #22d3ee 30%, #4ade80 60%, #a3e635 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+@keyframes shimmer { to { background-position: -200% center; } }
+
+/* Hover lift + glow for cards */
+/* Uses the standalone `translate` property so it composes with the reveal transform */
+.card-lift:not(.reveal) { transition: translate .35s cubic-bezier(.22,1,.36,1), box-shadow .35s ease, border-color .35s ease; }
+.card-lift:hover { translate: 0 -6px; box-shadow: 0 18px 40px -12px rgba(22,163,74,.25); }
+
+/* Icon wiggle on card hover */
+.group:hover .hover-wiggle { animation: wiggle .6s ease-in-out; }
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-10deg) scale(1.1); }
+  75% { transform: rotate(10deg) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal .reveal-icon, .reveal .grow-line { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; animation: none !important; }
+  .hero-in, .float, .blob, .text-shimmer, .group:hover .hover-wiggle { animation: none !important; }
+  .card-lift:hover { translate: none; }
+}
